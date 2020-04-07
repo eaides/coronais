@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="905e008c-320b-458b-a6ca-2674555230db" name="Default Changelist" comment="" />
+    <list default="true" id="905e008c-320b-458b-a6ca-2674555230db" name="Default Changelist" comment="first crud ajax without filter by countries (fix IL)">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/StatisticController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/StatisticController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Statistic.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Statistic.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/app.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/app.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/migrations/2020_04_06_105034_create_statistics_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2020_04_06_105034_create_statistics_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/home.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/home.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/layouts/app.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/app.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -12,6 +23,20 @@
     <execution>
       <executable />
     </execution>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="PhpDebugGeneral" listening_started="true" />
+  <component name="PhpServers">
+    <servers>
+      <server host="coronais.test" id="3c07498b-4a4e-434c-92dc-366a78ca1f11" name="coronais.test" use_path_mappings="true">
+        <path_mappings>
+          <mapping local-root="$PROJECT_DIR$" remote-root="/home/vagrant/Code/coronais" />
+          <mapping local-root="$PROJECT_DIR$/public" remote-root="/home/vagrant/Code/coronais/public" />
+        </path_mappings>
+      </server>
+    </servers>
   </component>
   <component name="PhpWorkspaceProjectConfiguration">
     <include_path>
@@ -115,6 +140,7 @@
     </include_path>
   </component>
   <component name="ProjectId" id="1aA93fJu5Dn5lvb3XXICKeMUN6H" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showExcludedFiles" value="true" />
@@ -122,9 +148,11 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../test_datatables_laravel" />
     <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="settings.php.debug.servers" />
   </component>
   <component name="RunManager">
     <configuration name="phpunit.xml" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
@@ -143,25 +171,132 @@
       <option name="presentableId" value="Default" />
       <updated>1586167333759</updated>
       <workItem from="1586167337069" duration="1540000" />
-      <workItem from="1586168956723" duration="3576000" />
+      <workItem from="1586168956723" duration="23669000" />
+      <workItem from="1586239659948" duration="393000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="first crud ajax withou filter by countries (fix IL)" />
+    <MESSAGE value="first crud ajax without filter by countries (fix IL)" />
+    <option name="LAST_COMMIT_MESSAGE" value="first crud ajax without filter by countries (fix IL)" />
+  </component>
   <component name="WindowStateProjectService">
+    <state x="808" y="147" key="CommitChangelistDialog2" timestamp="1586239831893">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="808" y="147" key="CommitChangelistDialog2/0.0.1920.1040/-1680.34.1680.1010@0.0.1920.1040" timestamp="1586239831893" />
+    <state x="572" y="190" width="1200" height="717" key="DiffContextDialog" timestamp="1586174226287">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="572" y="190" width="1200" height="717" key="DiffContextDialog/0.0.1920.1040/-1680.34.1680.1010@0.0.1920.1040" timestamp="1586174226287" />
     <state x="952" y="306" key="FileChooserDialogImpl" timestamp="1586169029034">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="952" y="306" key="FileChooserDialogImpl/0.0.1920.1040/-1680.34.1680.1010@0.0.1920.1040" timestamp="1586169029034" />
+    <state width="1340" height="286" key="GridCell.Tab.0.bottom" timestamp="1586239224167">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1340" height="286" key="GridCell.Tab.0.bottom/0.0.1920.1040/-1680.34.1680.1010@0.0.1920.1040" timestamp="1586239224167" />
+    <state width="1340" height="286" key="GridCell.Tab.0.center" timestamp="1586239224167">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1340" height="286" key="GridCell.Tab.0.center/0.0.1920.1040/-1680.34.1680.1010@0.0.1920.1040" timestamp="1586239224167" />
+    <state width="1340" height="286" key="GridCell.Tab.0.left" timestamp="1586239224167">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1340" height="286" key="GridCell.Tab.0.left/0.0.1920.1040/-1680.34.1680.1010@0.0.1920.1040" timestamp="1586239224167" />
+    <state width="1340" height="286" key="GridCell.Tab.0.right" timestamp="1586239224167">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1340" height="286" key="GridCell.Tab.0.right/0.0.1920.1040/-1680.34.1680.1010@0.0.1920.1040" timestamp="1586239224167" />
+    <state width="1340" height="286" key="GridCell.Tab.1.bottom" timestamp="1586239224167">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1340" height="286" key="GridCell.Tab.1.bottom/0.0.1920.1040/-1680.34.1680.1010@0.0.1920.1040" timestamp="1586239224167" />
+    <state width="1340" height="286" key="GridCell.Tab.1.center" timestamp="1586239224167">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1340" height="286" key="GridCell.Tab.1.center/0.0.1920.1040/-1680.34.1680.1010@0.0.1920.1040" timestamp="1586239224167" />
+    <state width="1340" height="286" key="GridCell.Tab.1.left" timestamp="1586239224167">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1340" height="286" key="GridCell.Tab.1.left/0.0.1920.1040/-1680.34.1680.1010@0.0.1920.1040" timestamp="1586239224167" />
+    <state width="1340" height="286" key="GridCell.Tab.1.right" timestamp="1586239224167">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1340" height="286" key="GridCell.Tab.1.right/0.0.1920.1040/-1680.34.1680.1010@0.0.1920.1040" timestamp="1586239224167" />
+    <state width="1340" height="286" key="GridCell.Tab.2.bottom" timestamp="1586239224168">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1340" height="286" key="GridCell.Tab.2.bottom/0.0.1920.1040/-1680.34.1680.1010@0.0.1920.1040" timestamp="1586239224168" />
+    <state width="1340" height="286" key="GridCell.Tab.2.center" timestamp="1586239224167">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1340" height="286" key="GridCell.Tab.2.center/0.0.1920.1040/-1680.34.1680.1010@0.0.1920.1040" timestamp="1586239224167" />
+    <state width="1340" height="286" key="GridCell.Tab.2.left" timestamp="1586239224167">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1340" height="286" key="GridCell.Tab.2.left/0.0.1920.1040/-1680.34.1680.1010@0.0.1920.1040" timestamp="1586239224167" />
+    <state width="1340" height="286" key="GridCell.Tab.2.right" timestamp="1586239224168">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1340" height="286" key="GridCell.Tab.2.right/0.0.1920.1040/-1680.34.1680.1010@0.0.1920.1040" timestamp="1586239224168" />
     <state x="1006" y="480" key="NewPhpFileDialog" timestamp="1586171245726">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="1006" y="480" key="NewPhpFileDialog/0.0.1920.1040/-1680.34.1680.1010@0.0.1920.1040" timestamp="1586171245726" />
-    <state x="877" y="304" width="590" height="488" key="find.popup" timestamp="1586168483623">
+    <state x="675" y="194" key="SettingsEditor" timestamp="1586179694677">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="877" y="304" width="590" height="488" key="find.popup/0.0.1920.1040/-1680.34.1680.1010@0.0.1920.1040" timestamp="1586168483623" />
+    <state x="675" y="194" key="SettingsEditor/0.0.1920.1040/-1680.34.1680.1010@0.0.1920.1040" timestamp="1586179694677" />
+    <state x="877" y="304" width="590" height="488" key="find.popup" timestamp="1586180990043">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="877" y="304" width="590" height="488" key="find.popup/0.0.1920.1040/-1680.34.1680.1010@0.0.1920.1040" timestamp="1586180990043" />
+    <state x="828" y="257" key="run.anything.popup" timestamp="1586184530015">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="828" y="257" key="run.anything.popup/0.0.1920.1040/-1680.34.1680.1010@0.0.1920.1040" timestamp="1586184530015" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/app/Http/Controllers/StatisticController.php</url>
+          <line>64</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/app/Http/Controllers/StatisticController.php</url>
+          <line>72</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/app/Http/Controllers/StatisticController.php</url>
+          <line>73</line>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/app/Http/Controllers/StatisticController.php</url>
+          <line>54</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/app/Http/Controllers/StatisticController.php</url>
+          <line>95</line>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <watches-manager>
+      <configuration name="index.php">
+        <watch expression="$request-&gt;qty" />
+        <watch expression="$request" />
+      </configuration>
+    </watches-manager>
   </component>
 </project>

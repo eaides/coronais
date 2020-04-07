@@ -9,7 +9,7 @@ class Statistic extends Model
     protected $fillable = [
         'country',
         'qty',
-        'amount',
+        'percent',
         'dateis',
     ];
 }

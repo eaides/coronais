@@ -8,6 +8,11 @@ use Yajra\Datatables\Datatables;
 
 class StatisticController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -18,13 +23,14 @@ class StatisticController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $query = Statistic::select('id','country','qty','amount','dateis');
+            $this->calculatePercent();
+            $query = Statistic::select('id','country','qty','percent','dateis');
             $where = 'IL';
             if ($request->has('country'))
             {
                 $where = $request->country;
             }
-            $query->where('country',$where);
+            $query->where('country',$where)->orderBy('dateis', 'desc');
             return Datatables::of($query)
                 ->addIndexColumn()
                 ->addColumn('action', function($row){
@@ -46,14 +52,25 @@ class StatisticController extends Controller
      */
     public function store(Request $request)
     {
-        Statistic::updateOrCreate(['id' => $request->Statistic_id],
+        $country = 'IL';
+        $percent = null;
+        if ($request->has('country') && !empty($request->country))
+        {
+            $country = $request->country;
+        }
+        if ($request->has('percent') && !empty($request->percent))
+        {
+            $percent = $request->percent;
+        }
+        Statistic::updateOrCreate(['id' => $request->data_id],
             [
-                'country' => $request->country,
+                'country' => $country,
                 'qty' => $request->qty,
-                'amount' => $request->amount,
+                'percent' => $percent,
                 'dateis' => $request->dateis,
             ]
         );
+        $this->calculatePercent();
         return response()->json(['success'=>'Statistic saved successfully.']);
     }
     /**
@@ -64,7 +81,7 @@ class StatisticController extends Controller
      */
     public function edit($id)
     {
-        $statistic = Statistic::find($id);
+        $statistic = Statistic::findOrFail($id);
         return response()->json($statistic);
     }
     /**
@@ -77,5 +94,38 @@ class StatisticController extends Controller
     {
         Statistic::find($id)->delete();
         return response()->json(['success'=>'Statistic deleted successfully.']);
+    }
+
+    protected function calculatePercent()
+    {
+        $statNoQtyPercent = Statistic::select('id','qty','percent', 'dateis')
+            ->where('percent', null)
+            ->orderBy('dateis')
+            ->get();
+        foreach($statNoQtyPercent as $statNoQtyPercentOne)
+        {
+            $qty = $statNoQtyPercentOne->qty;
+            $datais = $statNoQtyPercentOne->dateis;
+            $last = Statistic::select('id','qty','percent', 'dateis')
+                ->whereNotNull('percent')
+                ->where('dateis', '<', $datais)
+                ->orderBy('dateis', 'desc')
+                ->limit(1)
+                ->first();
+            if ($last)
+            {
+                $qtyBefore = $last->qty;
+                $number = $qty / $qtyBefore;
+                $percent = ($number - 1) * 100;
+                $percent = round($percent, 4);
+                $statNoQtyPercentOne->percent = $percent;
+                $statNoQtyPercentOne->save();
+            }
+            else
+            {
+                $statNoQtyPercentOne->percent = 0;
+                $statNoQtyPercentOne->save();
+            }
+        }
     }
 }

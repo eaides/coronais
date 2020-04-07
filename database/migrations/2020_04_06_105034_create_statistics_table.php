@@ -17,7 +17,7 @@ class CreateStatisticsTable extends Migration
             $table->id();
             $table->char('country', 2)->default('IL');
             $table->integer('qty');
-            $table->decimal('percent', 8, 4);
+            $table->decimal('percent', 8, 4)->nullable();
             $table->date('dateis');
             $table->timestamps();
         });
