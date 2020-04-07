@@ -10,6 +10,7 @@ class Statistic extends Model
         'country',
         'qty',
         'percent',
+        'diff',
         'dateis',
     ];
 }

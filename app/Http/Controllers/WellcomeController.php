@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Statistic;
 use Illuminate\Http\Request;
 use LaravelDaily\LaravelCharts\Classes\LaravelChart;
 
@@ -14,35 +15,56 @@ class WellcomeController extends Controller
      */
     public function index()
     {
-        $chart_options = [
-            'chart_title' => 'Percent by date',
-            'report_type' => 'group_by_string',
-            'model' => 'App\Statistic',
-            'group_by_field' => 'dateis',
-            'aggregate_function' => 'sum',
-            'aggregate_field' => 'percent',
-            'chart_type' => 'line',
-            'conditions' => [
-                ['name' => 'Country', 'condition' => 'country = "IL"', 'color' => 'black'],
-            ],
-        ];
-        $chart1 = new LaravelChart($chart_options);
-
-        $chart_options = [
-            'chart_title' => 'Quantity by date',
-            'report_type' => 'group_by_string',
-            'model' => 'App\Statistic',
-            'group_by_field' => 'dateis',
-            'aggregate_function' => 'sum',
-            'aggregate_field' => 'qty',
-            'chart_type' => 'line',
-            'conditions' => [
-                ['name' => 'Country', 'condition' => 'country = "IL"', 'color' => 'black'],
-            ],
-        ];
-        $chart2 = new LaravelChart($chart_options);
-
-        return view('welcome', compact('chart1', 'chart2'));
+        return view('welcome');
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\View\View|\Illuminate\Http\Response
+     * @throws \Exception
+     */
+    public function ajaxData(Request $request)
+    {
+        if ($request->ajax()) {
+            $country = 'IL';
+            $chart_id = $request->chart_id;
+            $entries = intval($request->entries);
+            if ($request->has('country') && !empty($request->country))
+            {
+                $country = $request->country;
+            }
+            $query = Statistic::select('id','country','qty','percent','diff','dateis');
+            $where = 'IL';
+            if ($request->has('country'))
+            {
+                $where = $request->country;
+            }
+            $stats = Statistic::select('id','country','qty','percent','diff','dateis')
+                ->where('country',$where)
+                ->orderBy('dateis', 'asc')
+                ->get();
+            $qty = $stats->count();
+            if ($qty > $entries) {
+                $sliceAt = $qty - $entries;
+                $stats = $stats->slice($sliceAt);
+            }
+
+            $labels = $stats->pluck('dateis');
+            switch ($chart_id) {
+                case 1:
+                    $data = $stats->pluck('percent');
+                    break;
+                case 2:
+                    $data = $stats->pluck('qty');
+                    break;
+                case 3:
+                    $data = $stats->pluck('diff');
+                    break;
+                default:
+                    $data = [];
+            }
+            return response()->json(compact('labels','data'));
+        }
+        return response()->json(['failure'=>'meyhod must call by ajax.']);
+    }
 }

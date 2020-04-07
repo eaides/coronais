@@ -24,6 +24,9 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::resource('ajaxStatistic','StatisticController');
 
+Route::post('ajaxChart', 'WellcomeController@ajaxData')->name('ajax.chart');
+
+
 
 
 // test only

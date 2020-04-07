@@ -23,8 +23,8 @@ class StatisticController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $this->calculatePercent();
-            $query = Statistic::select('id','country','qty','percent','dateis');
+            $this->calculatePercentDiff();
+            $query = Statistic::select('id','country','qty','percent','diff','dateis');
             $where = 'IL';
             if ($request->has('country'))
             {
@@ -54,6 +54,7 @@ class StatisticController extends Controller
     {
         $country = 'IL';
         $percent = null;
+        $diff = null;
         if ($request->has('country') && !empty($request->country))
         {
             $country = $request->country;
@@ -62,15 +63,20 @@ class StatisticController extends Controller
         {
             $percent = $request->percent;
         }
+        if ($request->has('diff') && !empty($request->diff))
+        {
+            $percent = $request->diff;
+        }
         Statistic::updateOrCreate(['id' => $request->data_id],
             [
                 'country' => $country,
                 'qty' => $request->qty,
                 'percent' => $percent,
+                'diff' => $diff,
                 'dateis' => $request->dateis,
             ]
         );
-        $this->calculatePercent();
+        $this->calculatePercentDiff();
         return response()->json(['success'=>'Statistic saved successfully.']);
     }
     /**
@@ -96,9 +102,16 @@ class StatisticController extends Controller
         return response()->json(['success'=>'Statistic deleted successfully.']);
     }
 
+    protected function calculatePercentDiff()
+    {
+        $this->calculatePercent();
+        $this->calculateDiff();
+    }
+
     protected function calculatePercent()
     {
-        $statNoQtyPercent = Statistic::select('id','qty','percent', 'dateis')
+        // Calculate Percent
+        $statNoQtyPercent = Statistic::select('id','qty','percent','diff', 'dateis')
             ->where('percent', null)
             ->orderBy('dateis')
             ->get();
@@ -106,7 +119,7 @@ class StatisticController extends Controller
         {
             $qty = $statNoQtyPercentOne->qty;
             $datais = $statNoQtyPercentOne->dateis;
-            $last = Statistic::select('id','qty','percent', 'dateis')
+            $last = Statistic::select('id','qty','percent','diff', 'dateis')
                 ->whereNotNull('percent')
                 ->where('dateis', '<', $datais)
                 ->orderBy('dateis', 'desc')
@@ -128,4 +141,36 @@ class StatisticController extends Controller
             }
         }
     }
+    protected function calculateDiff()
+    {
+        // Calculate Percent
+        $statNoQtyDiff = Statistic::select('id','qty','percent','diff', 'dateis')
+            ->where('diff', null)
+            ->orderBy('dateis')
+            ->get();
+        foreach($statNoQtyDiff as $statNoQtyDiffOne)
+        {
+            $qty = $statNoQtyDiffOne->qty;
+            $datais = $statNoQtyDiffOne->dateis;
+            $last = Statistic::select('id','qty','percent','diff', 'dateis')
+                ->whereNotNull('diff')
+                ->where('dateis', '<', $datais)
+                ->orderBy('dateis', 'desc')
+                ->limit(1)
+                ->first();
+            if ($last)
+            {
+                $qtyBefore = $last->qty;
+                $diff = $qty - $qtyBefore;
+                $statNoQtyDiffOne->diff = $diff;
+                $statNoQtyDiffOne->save();
+            }
+            else
+            {
+                $statNoQtyDiffOne->diff = 0;
+                $statNoQtyDiffOne->save();
+            }
+        }
+    }
+
 }

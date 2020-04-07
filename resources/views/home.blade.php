@@ -37,6 +37,7 @@
                         <tr>
                             <th>Quantity</th>
                             <th>Percent</th>
+                            <th>Difference</th>
                             <th>Date</th>
                             <th width="25%">Action</th>
                         </tr>
@@ -66,6 +67,12 @@
                                             <label class="col-sm-12 control-label">Percent</label>
                                             <div class="col-sm-12">
                                                 <input type="number" step="0.0001" class="form-control" id="percent" name="percent" placeholder="Percentaje - leave empty for auto-calculate" value="" maxlength="50">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-12 control-label">Difference</label>
+                                            <div class="col-sm-12">
+                                                <input type="number" class="form-control" id="diff" name="diff" placeholder="Difference - leave empty for auto-calculate" value="" maxlength="50">
                                             </div>
                                         </div>
                                         <div class="form-group">
@@ -152,6 +159,7 @@
                 "columns": [
                     {"data": "qty"},
                     {"data": "percent"},
+                    {"data": "diff"},
                     {"data": "dateis"},
                     {data: 'action', name: 'action', orderable: false, searchable: false}
                 ]
@@ -179,6 +187,7 @@
                     $('#data_id').val(data.id);
                     $('#qty').val(data.qty);
                     $('#percent').val(data.percent);
+                    $('#diff').val(data.diff);
                     $('#dateis').val(data.dateis);
                     $('#country').val(data.country);
                     $('#description').val(data.description);
