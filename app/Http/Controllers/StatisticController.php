@@ -25,12 +25,12 @@ class StatisticController extends Controller
         if ($request->ajax()) {
             $this->calculatePercentDiff();
             $query = Statistic::select('id','country','qty','percent','actives','active_percent','death','death_percent','dateis');
-            $where = 'IL';
+            $where_counrty_is = 1;
             if ($request->has('country'))
             {
-                $where = $request->country;
+                $where_counrty_is = $request->country;
             }
-            $query->where('country',$where)->orderBy('dateis', 'desc');
+            $query->where('country',$where_counrty_is)->orderBy('dateis', 'desc');
             return Datatables::of($query)
                 ->addIndexColumn()
                 ->addColumn('action', function($row){
@@ -52,7 +52,7 @@ class StatisticController extends Controller
      */
     public function store(Request $request)
     {
-        $country = 'IL';
+        $country = 1;
         if ($request->has('country') && !empty($request->country))
         {
             $country = $request->country;

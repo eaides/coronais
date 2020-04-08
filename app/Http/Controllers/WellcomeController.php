@@ -26,9 +26,9 @@ class WellcomeController extends Controller
     public function ajaxData(Request $request)
     {
         if ($request->ajax()) {
-            $country = 'IL';
             $chart_id = $request->chart_id;
             $entries = intval($request->entries);
+            $country = 1;
             if ($request->has('country') && !empty($request->country)) {
                 $country = $request->country;
             }

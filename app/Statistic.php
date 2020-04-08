@@ -18,4 +18,12 @@ class Statistic extends Model
         'diff_actives',
         'death_percent',
     ];
+
+    /**
+    * Get the country that owns the statistic
+    */
+    public function post()
+    {
+        return $this->belongsTo('App\Country');
+    }
 }

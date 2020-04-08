@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateStatisticsTable extends Migration
+class CreateCountriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,12 @@ class CreateStatisticsTable extends Migration
      */
     public function up()
     {
-        Schema::create('statistics', function (Blueprint $table) {
+        Schema::create('countries', function (Blueprint $table) {
             $table->id();
-            $table->integer('qty');
-            $table->decimal('percent', 8, 4)->nullable();
-            $table->integer('diff')->nullable();
-            $table->date('dateis');
+            $table->char('name');
+            $table->char('twoChars',2)->nullable();
+            $table->char('url');
+            $table->unique('twoChars');
             $table->timestamps();
         });
     }
@@ -30,6 +30,6 @@ class CreateStatisticsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('statistics');
+        Schema::dropIfExists('countries');
     }
 }
