@@ -29,42 +29,45 @@ class WellcomeController extends Controller
             $country = 'IL';
             $chart_id = $request->chart_id;
             $entries = intval($request->entries);
-            if ($request->has('country') && !empty($request->country))
-            {
+            if ($request->has('country') && !empty($request->country)) {
                 $country = $request->country;
             }
-            $query = Statistic::select('id','country','qty','percent','diff','dateis');
-            $where = 'IL';
-            if ($request->has('country'))
-            {
-                $where = $request->country;
-            }
-            $stats = Statistic::select('id','country','qty','percent','diff','dateis')
-                ->where('country',$where)
-                ->orderBy('dateis', 'asc')
-                ->get();
-            $qty = $stats->count();
-            if ($qty > $entries) {
-                $sliceAt = $qty - $entries;
-                $stats = $stats->slice($sliceAt);
-            }
-
-            $labels = $stats->pluck('dateis');
-            switch ($chart_id) {
-                case 1:
-                    $data = $stats->pluck('percent');
-                    break;
-                case 2:
-                    $data = $stats->pluck('qty');
-                    break;
-                case 3:
-                    $data = $stats->pluck('diff');
-                    break;
-                default:
-                    $data = [];
-            }
+            list($labels, $data) = $this->getStatChartsData($chart_id, $entries, $country);
             return response()->json(compact('labels','data'));
         }
         return response()->json(['failure'=>'meyhod must call by ajax.']);
+    }
+
+    /**
+     * @param Request $request
+     * @return array
+     */
+    protected function getStatChartsData($chart_id, $entries, $country): array
+    {
+        $stats = Statistic::select('id', 'country', 'qty', 'percent', 'diff', 'dateis')
+            ->where('country', $country)
+            ->orderBy('dateis', 'asc')
+            ->get();
+        $qty = $stats->count();
+        if ($qty > $entries) {
+            $sliceAt = $qty - $entries;
+            $stats = $stats->slice($sliceAt);
+        }
+
+        $labels = $stats->pluck('dateis');
+        switch ($chart_id) {
+            case 1:
+                $data = $stats->pluck('percent');
+                break;
+            case 2:
+                $data = $stats->pluck('qty');
+                break;
+            case 3:
+                $data = $stats->pluck('diff');
+                break;
+            default:
+                $data = [];
+        }
+        return array($labels, $data);
     }
 }

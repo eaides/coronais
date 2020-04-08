@@ -15,7 +15,7 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
                     <div class="col-md-12">
@@ -35,11 +35,14 @@
                     <table class="table table-bordered data-table" id="dataTable">
                         <thead>
                         <tr>
-                            <th>Quantity</th>
-                            <th>Percent</th>
-                            <th>Difference</th>
+                            <th>Total Quantity</th>
+                            <th>Total % diff</th>
+                            <th>Actives</th>
+                            <th>Active % diff.</th>
+                            <th width="10%">Deaths</th>
+                            <th>% death</th>
                             <th>Date</th>
-                            <th width="25%">Action</th>
+                            <th width="15%">Action</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -55,24 +58,25 @@
                                 </div>
                                 <div class="modal-body">
                                     <form id="dataForm" action="" method="post" class="form-horizontal">
+                                        <a href="https://www.worldometers.info/coronavirus/country/israel/" target="_blank">https://www.worldometers.info/coronavirus/country/israel/</a>
                                         <input type="hidden" name="data_id" id="data_id">
                                         <input type="hidden" name="country" id="country" value="">
                                         <div class="form-group">
-                                            <label for="name" class="col-sm-12 control-label">Quantity</label>
+                                            <label for="name" class="col-sm-12 control-label">Total Quantity</label>
                                             <div class="col-sm-12">
-                                                <input type="number" class="form-control" id="qty" name="qty" placeholder="Enter quantity" value="" maxlength="50" required>
+                                                <input type="number" class="form-control" id="qty" name="qty" placeholder="Enter total quantity" value="" maxlength="50" required>
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label class="col-sm-12 control-label">Percent</label>
+                                            <label class="col-sm-12 control-label">Actives</label>
                                             <div class="col-sm-12">
-                                                <input type="number" step="0.0001" class="form-control" id="percent" name="percent" placeholder="Percentaje - leave empty for auto-calculate" value="" maxlength="50">
+                                                <input type="number" class="form-control" id="actives" name="actives" placeholder="Enter total quantity" value="" maxlength="50">
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label class="col-sm-12 control-label">Difference</label>
+                                            <label class="col-sm-12 control-label">Death</label>
                                             <div class="col-sm-12">
-                                                <input type="number" class="form-control" id="diff" name="diff" placeholder="Difference - leave empty for auto-calculate" value="" maxlength="50">
+                                                <input type="number" class="form-control" id="death" name="death" placeholder="Enter total quantity" value="" maxlength="50">
                                             </div>
                                         </div>
                                         <div class="form-group">
@@ -99,6 +103,8 @@
 
 @section('body_scripts')
     <script>
+        var reOrder = false;
+
         function padDigits(num, size) {
             num = parseInt(num);
             if (num.toString().length >= size) return num;
@@ -159,7 +165,10 @@
                 "columns": [
                     {"data": "qty"},
                     {"data": "percent"},
-                    {"data": "diff"},
+                    {"data": "actives"},
+                    {"data": "active_percent"},
+                    {"data": "death"},
+                    {"data": "death_percent"},
                     {"data": "dateis"},
                     {data: 'action', name: 'action', orderable: false, searchable: false}
                 ]
@@ -176,6 +185,7 @@
                 $('#country').val("");
                 $('#modelHeading').html("Create New Data");
                 $('#ajaxModel').modal({backdrop: "static"});
+                reOrder = true;
             });
 
             $('body').on('click', '.editItem', function () {
@@ -186,11 +196,11 @@
                     $('#ajaxModel').modal('show');
                     $('#data_id').val(data.id);
                     $('#qty').val(data.qty);
-                    $('#percent').val(data.percent);
-                    $('#diff').val(data.diff);
+                    $('#death').val(data.death);
+                    $('#actives').val(data.actives);
                     $('#dateis').val(data.dateis);
                     $('#country').val(data.country);
-                    $('#description').val(data.description);
+                    reOrder = false;
                 })
             });
 
@@ -205,9 +215,10 @@
                     type: "POST",
                     dataType: 'json',
                     success: function (data) {
+                        $('#saveBtn').html('Save Changes');
                         $('#dataForm').trigger("reset");
                         $('#ajaxModel').modal('hide');
-                        table.draw();
+                        table.draw(reOrder);
                     },
                     error: function (data) {
                         console.log('Error:', data);
@@ -224,7 +235,7 @@
                             type: "DELETE",
                             url: "{{ route('ajaxStatistic.store') }}"+'/'+data_id,
                             success: function (data) {
-                                table.draw();
+                                table.draw(false);
                             },
                             error: function (data) {
                                 console.log('Error:', data);

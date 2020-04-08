@@ -24,7 +24,7 @@ class StatisticController extends Controller
     {
         if ($request->ajax()) {
             $this->calculatePercentDiff();
-            $query = Statistic::select('id','country','qty','percent','diff','dateis');
+            $query = Statistic::select('id','country','qty','percent','actives','active_percent','death','death_percent','dateis');
             $where = 'IL';
             if ($request->has('country'))
             {
@@ -53,27 +53,22 @@ class StatisticController extends Controller
     public function store(Request $request)
     {
         $country = 'IL';
-        $percent = null;
-        $diff = null;
         if ($request->has('country') && !empty($request->country))
         {
             $country = $request->country;
-        }
-        if ($request->has('percent') && !empty($request->percent))
-        {
-            $percent = $request->percent;
-        }
-        if ($request->has('diff') && !empty($request->diff))
-        {
-            $percent = $request->diff;
         }
         Statistic::updateOrCreate(['id' => $request->data_id],
             [
                 'country' => $country,
                 'qty' => $request->qty,
-                'percent' => $percent,
-                'diff' => $diff,
+                'actives' => $request->actives,
+                'death' => $request->death,
                 'dateis' => $request->dateis,
+                'percent' => null,
+                'diff' => null,
+                'diff_actives' => null,
+                'active_percent' => null,
+                'death_percent' => null,
             ]
         );
         $this->calculatePercentDiff();
@@ -106,20 +101,24 @@ class StatisticController extends Controller
     {
         $this->calculatePercent();
         $this->calculateDiff();
+        $this->calculateActivePercent();
+        $this->calculateActiveDiff();
+        $this->calculateDeathPercent();
     }
 
     protected function calculatePercent()
     {
         // Calculate Percent
-        $statNoQtyPercent = Statistic::select('id','qty','percent','diff', 'dateis')
+        $statNoQtyPercent = Statistic::select('id','qty','percent','dateis')
             ->where('percent', null)
             ->orderBy('dateis')
             ->get();
         foreach($statNoQtyPercent as $statNoQtyPercentOne)
         {
             $qty = $statNoQtyPercentOne->qty;
+            if (!$qty) continue;
             $datais = $statNoQtyPercentOne->dateis;
-            $last = Statistic::select('id','qty','percent','diff', 'dateis')
+            $last = Statistic::select('id','qty','percent','dateis')
                 ->whereNotNull('percent')
                 ->where('dateis', '<', $datais)
                 ->orderBy('dateis', 'desc')
@@ -141,18 +140,55 @@ class StatisticController extends Controller
             }
         }
     }
+
+    protected function calculateActivePercent()
+    {
+        // Calculate Percent
+        $statNoActivePercent = Statistic::select('id','actives','active_percent','dateis')
+            ->where('active_percent', null)
+            ->orderBy('dateis')
+            ->get();
+        foreach($statNoActivePercent as $statNoActivePercentOne)
+        {
+            $actives = $statNoActivePercentOne->actives;
+            if (!$actives) continue;
+            $datais = $statNoActivePercentOne->dateis;
+            $last = Statistic::select('id','actives','active_percent','dateis')
+                ->whereNotNull('active_percent')
+                ->where('dateis', '<', $datais)
+                ->orderBy('dateis', 'desc')
+                ->limit(1)
+                ->first();
+            if ($last)
+            {
+                $activesBefore = $last->actives;
+                $number = $actives / $activesBefore;
+                $active_percent = ($number - 1) * 100;
+                $active_percent = round($active_percent, 4);
+                $statNoActivePercentOne->active_percent = $active_percent;
+                $statNoActivePercentOne->save();
+            }
+            else
+            {
+                $statNoActivePercentOne->active_percent = 0;
+                $statNoActivePercentOne->save();
+            }
+        }
+    }
+
     protected function calculateDiff()
     {
         // Calculate Percent
-        $statNoQtyDiff = Statistic::select('id','qty','percent','diff', 'dateis')
+        $statNoQtyDiff = Statistic::select('id','qty','diff', 'dateis')
             ->where('diff', null)
             ->orderBy('dateis')
             ->get();
         foreach($statNoQtyDiff as $statNoQtyDiffOne)
         {
             $qty = $statNoQtyDiffOne->qty;
+            if (!$qty) continue;
             $datais = $statNoQtyDiffOne->dateis;
-            $last = Statistic::select('id','qty','percent','diff', 'dateis')
+            $last = Statistic::select('id','qty','diff', 'dateis')
                 ->whereNotNull('diff')
                 ->where('dateis', '<', $datais)
                 ->orderBy('dateis', 'desc')
@@ -169,6 +205,63 @@ class StatisticController extends Controller
             {
                 $statNoQtyDiffOne->diff = 0;
                 $statNoQtyDiffOne->save();
+            }
+        }
+    }
+
+    protected function calculateActiveDiff()
+    {
+        // Calculate Percent
+        $statNoActiveDiff = Statistic::select('id','actives','diff_actives', 'dateis')
+            ->where('diff_actives', null)
+            ->orderBy('dateis')
+            ->get();
+        foreach($statNoActiveDiff as $statNoActiveDiffOne)
+        {
+            $actives = $statNoActiveDiffOne->actives;
+            if (!$actives) continue;
+            $datais = $statNoActiveDiffOne->dateis;
+            $last = Statistic::select('id','actives','diff_actives', 'dateis')
+                ->whereNotNull('diff_actives')
+                ->where('dateis', '<', $datais)
+                ->orderBy('dateis', 'desc')
+                ->limit(1)
+                ->first();
+            if ($last)
+            {
+                $activesBefore = $last->qty;
+                $diff_active = $actives - $activesBefore;
+                $statNoActiveDiffOne->diff_actives = $diff_active;
+                $statNoActiveDiffOne->save();
+            }
+            else
+            {
+                $statNoActiveDiffOne->diff_actives = 0;
+                $statNoActiveDiffOne->save();
+            }
+        }
+    }
+
+    protected function calculateDeathPercent()
+    {
+        // Calculate Percent
+        $statNoDeathPercent = Statistic::select('id','qty','death','death_percent','dateis')
+            ->where('death_percent', null)
+            ->orderBy('dateis')
+            ->get();
+        foreach($statNoDeathPercent as $statNoDeathPercentOne)
+        {
+            $qty = $statNoDeathPercentOne->qty;
+            $death = $statNoDeathPercentOne->death;
+            if (!$death || !$qty) {
+                $statNoDeathPercentOne->death_percent = 0;
+                $statNoDeathPercentOne->save();
+            } else {
+                $number = $death / $qty;
+                $death_percent = $number * 100;
+                $death_percent = round($death_percent, 6);
+                $statNoDeathPercentOne->death_percent = $death_percent;
+                $statNoDeathPercentOne->save();
             }
         }
     }
