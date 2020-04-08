@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Statistic extends Model
 {
     protected $fillable = [
-        'country',
+        'country_id',
         'qty',
         'actives',
         'death',

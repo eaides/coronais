@@ -60,7 +60,7 @@
                                     <form id="dataForm" action="" method="post" class="form-horizontal">
                                         <a href="https://www.worldometers.info/coronavirus/country/israel/" target="_blank">https://www.worldometers.info/coronavirus/country/israel/</a>
                                         <input type="hidden" name="data_id" id="data_id">
-                                        <input type="hidden" name="country" id="country" value="">
+                                        <input type="hidden" name="country_id" id="country_id" value="">
                                         <div class="form-group">
                                             <label for="name" class="col-sm-12 control-label">Total Quantity</label>
                                             <div class="col-sm-12">
@@ -182,7 +182,7 @@
                 $('#dataForm').trigger("reset");
                 $('#data_id').val("");
                 $('#dateis').val(nowIsStr);
-                $('#country').val("");
+                $('#country_id').val("");
                 $('#modelHeading').html("Create New Data");
                 $('#ajaxModel').modal({backdrop: "static"});
                 reOrder = true;
@@ -199,7 +199,7 @@
                     $('#death').val(data.death);
                     $('#actives').val(data.actives);
                     $('#dateis').val(data.dateis);
-                    $('#country').val(data.country);
+                    $('#country_id').val(data.country_id);
                     reOrder = false;
                 })
             });

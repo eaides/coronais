@@ -28,11 +28,11 @@ class WellcomeController extends Controller
         if ($request->ajax()) {
             $chart_id = $request->chart_id;
             $entries = intval($request->entries);
-            $country = 1;
-            if ($request->has('country') && !empty($request->country)) {
-                $country = $request->country;
+            $country_id = 1;
+            if ($request->has('country_id') && !empty($request->country_id)) {
+                $country_id = $request->country_id;
             }
-            list($labels, $data) = $this->getStatChartsData($chart_id, $entries, $country);
+            list($labels, $data) = $this->getStatChartsData($chart_id, $entries, $country_id);
             return response()->json(compact('labels','data'));
         }
         return response()->json(['failure'=>'meyhod must call by ajax.']);
@@ -42,14 +42,14 @@ class WellcomeController extends Controller
      * @param Request $request
      * @return array
      */
-    protected function getStatChartsData($chart_id, $entries, $country): array
+    protected function getStatChartsData($chart_id, $entries, $country_id): array
     {
-        $stats = Statistic::select('id', 'country',
+        $stats = Statistic::select('id', 'country_id',
             'qty', 'percent', 'diff',
             'actives', 'diff_actives', 'active_percent',
             'death', 'death_percent',
             'dateis')
-            ->where('country', $country)
+            ->where('country_id', $country_id)
             ->orderBy('dateis', 'asc')
             ->get();
         $qty = $stats->count();
