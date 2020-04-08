@@ -44,7 +44,11 @@ class WellcomeController extends Controller
      */
     protected function getStatChartsData($chart_id, $entries, $country): array
     {
-        $stats = Statistic::select('id', 'country', 'qty', 'percent', 'diff', 'dateis')
+        $stats = Statistic::select('id', 'country',
+            'qty', 'percent', 'diff',
+            'actives', 'diff_actives', 'active_percent',
+            'death', 'death_percent',
+            'dateis')
             ->where('country', $country)
             ->orderBy('dateis', 'asc')
             ->get();
@@ -56,14 +60,31 @@ class WellcomeController extends Controller
 
         $labels = $stats->pluck('dateis');
         switch ($chart_id) {
-            case 1:
+            case '1':
                 $data = $stats->pluck('percent');
                 break;
-            case 2:
+            case '2':
                 $data = $stats->pluck('qty');
                 break;
-            case 3:
+            case '3':
                 $data = $stats->pluck('diff');
+                break;
+
+            case '1b':
+                $data = $stats->pluck('active_percent');
+                break;
+            case '2b':
+                $data = $stats->pluck('actives');
+                break;
+            case '3b':
+                $data = $stats->pluck('diff_actives');
+                break;
+
+            case '1c':
+                $data = $stats->pluck('death_percent');
+                break;
+            case '2c':
+                $data = $stats->pluck('death');
                 break;
             default:
                 $data = [];
