@@ -20,7 +20,7 @@
                 <div class="card-header">
                     <div class="row justify-content-center">
                         <div class="col-md-6">
-                            <h4 class="card-title">Israel Corona Virus Statistics
+                            <h4 class="card-title">Corona Virus Statistics
                                 <a class="btn btn-success ml-5" href="javascript:void(0)" id="createNewItem"> Create New Data</a>
                             </h4>
                         </div>
@@ -78,7 +78,7 @@
                                 </div>
                                 <div class="modal-body">
                                     <form id="dataForm" action="" method="post" class="form-horizontal">
-                                        <a href="https://www.worldometers.info/coronavirus/country/israel/" target="_blank">https://www.worldometers.info/coronavirus/country/israel/</a>
+                                        <a href="https://www.worldometers.info/coronavirus/country/israel/" target="_blank">https://www.worldometers.info/coronavirus/country/israel/ ...</a>
                                         <input type="hidden" name="data_id" id="data_id">
                                         <input type="hidden" name="country_id" id="country_id" value="">
                                         <div class="form-group">

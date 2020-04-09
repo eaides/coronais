@@ -4,12 +4,10 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Corona Virus</title>
+        <title>{{ config('app.name', 'Laravel') }}</title>
 
         <!-- CSRF Token -->
         <meta name="csrf-token" content="{{ csrf_token() }}">
-
-        <title>{{ config('app.name', 'Laravel') }}</title>
 
         <!-- Scripts -->
         <script src="{{ asset('js/app.js') }}"></script>
@@ -81,23 +79,10 @@
 {{--                </div>--}}
 {{--            @endif--}}
 
-{{--            <div class="content">--}}
-{{--                <div class="title m-b-md">--}}
-{{--                    Corona Virus israel--}}
-{{--                    {{ $chart1->options['chart_title'] }}--}}
-{{--                    {!! $chart1->renderHtml() !!}--}}
-{{--                    {{ $chart2->options['chart_title'] }}--}}
-{{--                    {!! $chart2->renderHtml() !!}--}}
-
-{{--                </div>--}}
-{{--            </div>--}}
-
             <div class="row text-center">
                 <div class="col-md-10 offset-md-1 justify-content-center">
-                    <h2>Corona Virus in Israel
-                        <small class="text-muted">(statistic)</small>
-                    </h2>
-                </div>
+                    <h2>Corona Virus <small class="text-muted">(statistic)</small></h2>
+                </div><br><br>
                 <div class="col-md-4 offset-md-1 justify-content-center">
                     <div class="input-group mb-1">
                         <div class="input-group-prepend">
