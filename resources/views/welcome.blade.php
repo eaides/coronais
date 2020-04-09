@@ -110,7 +110,7 @@
                             @foreach($countries as $country)
                                 @php
                                     $selected = '';
-                                    if (strtoupper($country->twoChars) == 'IL') {
+                                    if (strtoupper($country->twoChars) == '--') {
                                         $selected = 'selected';
                                     }
                                 @endphp
@@ -168,6 +168,42 @@
 
         {{-- scripts --}}
         <script>
+
+            function setCookie(cname, cvalue, exdays) {
+                var d = new Date();
+                d.setTime(d.getTime() + (exdays*24*60*60*1000));
+                var expires = "expires="+ d.toUTCString();
+                document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+            }
+
+            function getCookie(cname) {
+                var name = cname + "=";
+                var decodedCookie = decodeURIComponent(document.cookie);
+                var ca = decodedCookie.split(';');
+                for(var i = 0; i <ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0) == ' ') {
+                        c = c.substring(1);
+                    }
+                    if (c.indexOf(name) == 0) {
+                        return c.substring(name.length, c.length);
+                    }
+                }
+                return "";
+            }
+
+            var selector_id_interval = getCookie('corona_stats_id_interval');
+            if (selector_id_interval != "") {
+                $('#inputGroupSelectEntries').val(selector_id_interval);
+            }
+            setCookie('corona_stats_id_interval', $('#inputGroupSelectEntries').val(), 1);
+
+            var selector_country_id = getCookie('corona_stats_country_id');
+            if (selector_country_id != "") {
+                $('#inputGroupSelectCountries').val(selector_country_id);
+            }
+            setCookie('corona_stats_country_id', $('#inputGroupSelectCountries').val(), 1);
+
             var ctx1 = document.getElementById('chart1');
             var chart1 = new Chart(ctx1,{type:'line',data:{labels:[],datasets:[{label:'Percentaje',data:[],borderWidth:1},]},
                 options:{scales:{xAxes:[],yAxes:[{ticks:{beginAtZero:true}}]}}});
@@ -255,10 +291,12 @@
 
             $('#inputGroupSelectEntries').change(function(){
                 updateAllCharts();
+                setCookie('corona_stats_id_interval', $('#inputGroupSelectEntries').val(), 1);
             });
 
             $('#inputGroupSelectCountries').change(function(){
                 updateAllCharts();
+                setCookie('corona_stats_country_id', $('#inputGroupSelectCountries').val(), 1);
             });
 
         </script>

@@ -124,6 +124,34 @@
 @section('body_scripts')
     <script>
         var reOrder = false;
+        function setCookie(cname, cvalue, exdays) {
+            var d = new Date();
+            d.setTime(d.getTime() + (exdays*24*60*60*1000));
+            var expires = "expires="+ d.toUTCString();
+            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+        }
+
+        function getCookie(cname) {
+            var name = cname + "=";
+            var decodedCookie = decodeURIComponent(document.cookie);
+            var ca = decodedCookie.split(';');
+            for(var i = 0; i <ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+
+        var selector_country_id = getCookie('corona_stats_country_id');
+        if (selector_country_id != "") {
+            $('#inputGroupSelectCountries').val(selector_country_id);
+        }
+        setCookie('corona_stats_country_id', $('#inputGroupSelectCountries').val(), 1);
 
         function padDigits(num, size) {
             num = parseInt(num);
@@ -262,6 +290,7 @@
 
             $('#inputGroupSelectCountries').change(function(){
                 $('#country_id').val($(this).val());
+                setCookie('corona_stats_country_id', $('#inputGroupSelectCountries').val(), 1);
             });
 
             $('body').on('click', '.deleteItem', function () {

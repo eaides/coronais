@@ -49,7 +49,7 @@ class ScrapStatistic extends Command
             if (!empty($url))
             {
                 $subject = file_get_contents($url);
-                // \Log::info($data);
+
                 $pattern = "/xAxis:\s*{\s*categories:\s*(\[.*\])\s*},/";
                 $matches = [];
                 $dateis_array = [];
