@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        Commands\ScrapStatistic::class,
     ];
 
     /**
@@ -25,6 +25,9 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
+        $schedule->command('scrap:statistic')->dailyAt('03:00');
+        $schedule->command('scrap:statistic')->dailyAt('05:00');
+        $schedule->command('scrap:statistic')->dailyAt('12:00');
     }
 
     /**
