@@ -18,10 +18,30 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <div class="col-md-12">
-                        <h4 class="card-title">Israel Corona Virus Statistics
-                            <a class="btn btn-success ml-5" href="javascript:void(0)" id="createNewItem"> Create New Data</a>
-                        </h4>
+                    <div class="row justify-content-center">
+                        <div class="col-md-6">
+                            <h4 class="card-title">Israel Corona Virus Statistics
+                                <a class="btn btn-success ml-5" href="javascript:void(0)" id="createNewItem"> Create New Data</a>
+                            </h4>
+                        </div>
+                        <div class="col-md-4 offset-md-1 justify-content-center">
+                            <div class="input-group mb-1">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text" for="inputGroupSelectCountries">Country:</label>
+                                </div>
+                                <select class="custom-select" id="inputGroupSelectCountries">
+                                    @foreach($countries as $country)
+                                        @php
+                                            $selected = '';
+                                            if (strtoupper($country->twoChars) == 'IL') {
+                                                $selected = 'selected';
+                                            }
+                                        @endphp
+                                        <option value="{{$country->id}}" {{$selected}}>{{$country->name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -158,10 +178,18 @@
         });
 
         $(document).ready(function() {
+
+            $('#country_id').val($('#inputGroupSelectCountries').val());
+
             var table = $('#dataTable').DataTable({
                 "processing": true,
                 "serverSide": true,
-                "ajax": "{{route('ajaxStatistic.index')}}",
+                "ajax": {
+                    "url": "{{route('ajaxStatistic.index')}}",
+                    "data": function ( d ) {
+                        d.country_id = $('#country_id').val();
+                    }
+                },
                 "columns": [
                     {"data": "qty"},
                     {"data": "percent"},
@@ -174,6 +202,11 @@
                 ]
             });
 
+            $('#inputGroupSelectCountries').change(function(){
+                $('#country_id').val($(this).val());
+                table.draw(true);
+            });
+
             $('#createNewItem').click(function () {
                 var nowIs = new Date();
                 nowIs.setDate(nowIs.getDate() - 1);
@@ -182,7 +215,7 @@
                 $('#dataForm').trigger("reset");
                 $('#data_id').val("");
                 $('#dateis').val(nowIsStr);
-                $('#country_id').val("");
+                $('#country_id').val($('#inputGroupSelectCountries').val());
                 $('#modelHeading').html("Create New Data");
                 $('#ajaxModel').modal({backdrop: "static"});
                 reOrder = true;
@@ -225,6 +258,10 @@
                         $('#saveBtn').html('Save Changes');
                     }
                 });
+            });
+
+            $('#inputGroupSelectCountries').change(function(){
+                $('#country_id').val($(this).val());
             });
 
             $('body').on('click', '.deleteItem', function () {

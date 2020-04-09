@@ -110,11 +110,32 @@
                             <option value="45">45 entries</option>
                             <option value="30">30 entries</option>
                             <option value="20">20 entries</option>
-                            <option value="15">15 entries</option>
+                            <option value="15" selected>15 entries</option>
                             <option value="10">10 entries</option>
                         </select>
                     </div>
                 </div>
+
+                <div class="col-md-4 offset-md-1 justify-content-center">
+                    <div class="input-group mb-1">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="inputGroupSelectCountries">Country:</label>
+                        </div>
+                        <select class="custom-select" id="inputGroupSelectCountries">
+                            @foreach($countries as $country)
+                                @php
+                                    $selected = '';
+                                    if (strtoupper($country->twoChars) == 'IL') {
+                                        $selected = 'selected';
+                                    }
+                                @endphp
+                                <option value="{{$country->id}}" {{$selected}}>{{$country->name}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
+
             </div>
             <br><br>
             <div class="row text-center">
@@ -197,9 +218,11 @@
 
             var updateChart = function(chart, chart_id, endspinner) {
                 var entries = $('#inputGroupSelectEntries').val();
+                var country = $('#inputGroupSelectCountries').val();
                 var data = {
                     chart_id: chart_id,
-                    entries: entries
+                    entries: entries,
+                    country_id: country
                 };
                 $.ajax({
                     url: "{{ route('ajax.chart') }}",
@@ -246,6 +269,10 @@
             updateAllCharts();
 
             $('#inputGroupSelectEntries').change(function(){
+                updateAllCharts();
+            });
+
+            $('#inputGroupSelectCountries').change(function(){
                 updateAllCharts();
             });
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Country;
 use App\Statistic;
 use Illuminate\Http\Request;
 use LaravelDaily\LaravelCharts\Classes\LaravelChart;
@@ -15,7 +16,8 @@ class WellcomeController extends Controller
      */
     public function index()
     {
-        return view('welcome');
+        $countries = Country::orderBy('name')->get();
+        return view('welcome', compact('countries'));
     }
 
     /**
