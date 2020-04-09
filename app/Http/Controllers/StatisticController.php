@@ -98,7 +98,7 @@ class StatisticController extends Controller
         return response()->json(['success'=>'Statistic deleted successfully.']);
     }
 
-    protected function calculatePercentDiff($country_id=null)
+    public function calculatePercentDiff($country_id=null)
     {
         $this->calculatePercent($country_id);
         $this->calculateDiff($country_id);
