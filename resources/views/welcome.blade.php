@@ -146,8 +146,7 @@
             <div class="row justify-content-center">
                 <div class="col-md-12 text-center">
                     <div class="form-row align-items-center justify-content-center">
-                        <div class="col-sm-3 my-1">
-                            <label class="sr-only" for="inlineFormInputGroupUsername">Username</label>
+                        <div class="col-sm-4">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <div class="input-group-text">10 days since</div>
@@ -155,8 +154,8 @@
                                 <input type="text" id="date-picker-since" class="form-control datepicker">
                             </div>
                         </div>
-                        <div class="col-auto my-1">
-                            <button id="inlineFormInputGroupSinceApply" class="btn btn-primary">Apply</button>
+                        <div class="col-sm-3">
+                            <button id="inlineFormInputGroupSinceApply" class="btn btn-primary">Apply 10 days since...</button>
                         </div>
                     </div>
                 </div>
