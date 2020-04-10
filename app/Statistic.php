@@ -22,7 +22,7 @@ class Statistic extends Model
     /**
     * Get the country that owns the statistic
     */
-    public function post()
+    public function country()
     {
         return $this->belongsTo('App\Country');
     }

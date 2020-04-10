@@ -15,7 +15,7 @@ class Country extends Model
     /**
      * Get the statistics for the country
      */
-    public function comments()
+    public function statistics()
     {
         return $this->hasMany('App\Statistic');
     }

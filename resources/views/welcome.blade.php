@@ -19,11 +19,15 @@
         <!-- Styles -->
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
         <link href="{{ asset('css/select2-bootstrap4.min.css') }}" rel="stylesheet">
+        <link href="{{ asset('css/bootstrap-datetimepicker.css') }}" rel="stylesheet">
 
         <!-- Scripts -->
         <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.21.0/moment.min.js" type="text/javascript"></script>
+        <script src="{{ asset('js/bootstrap-datetimepicker.min.js') }}"></script>
 
         <style>
             #overlay {
@@ -128,19 +132,36 @@
                             @foreach($countries as $country)
                                 @php
                                     $selected = '';
-                                    if (strtoupper($country->twoChars) == '--') {
+                                    if (strtoupper($country['twoChars']) == '--') {
                                         $selected = 'selected';
                                     }
                                 @endphp
-                                <option value="{{$country->id}}" {{$selected}}>{{$country->name}}</option>
+                                <option value="{{$country['id']}}" data-date="{{$country['date']}}" data-min="{{$country['min']}}" data-max="{{$country['max']}}" {{$selected}}>{{$country['name']}}</option>
                             @endforeach
                         </select>
                     </div>
                 </div>
-
-
             </div>
-            <br><br>
+
+            <div class="row justify-content-center">
+                <div class="col-md-12 text-center">
+                    <div class="form-row align-items-center justify-content-center">
+                        <div class="col-sm-3 my-1">
+                            <label class="sr-only" for="inlineFormInputGroupUsername">Username</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">10 days since</div>
+                                </div>
+                                <input type="text" id="date-picker-since" class="form-control datepicker">
+                            </div>
+                        </div>
+                        <div class="col-auto my-1">
+                            <button id="inlineFormInputGroupSinceApply" class="btn btn-primary">Apply</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="row text-center">
                 <div class="col-md-6">
                     <h3>Increase % by day</h3>
@@ -186,6 +207,8 @@
 
         {{-- scripts --}}
         <script>
+            var datepicker = false;
+
             function setCookie(cname, cvalue, exdays) {
                 var d = new Date();
                 d.setTime(d.getTime() + (exdays*24*60*60*1000));
@@ -209,6 +232,21 @@
                 return "";
             }
 
+            function setDatepicker() {
+                var date = $('#inputGroupSelectCountries option:selected').data('date');
+                var minDate = $('#inputGroupSelectCountries option:selected').data('min');
+                var maxDate = $('#inputGroupSelectCountries option:selected').data('max');
+                if (datepicker!=false) {
+                    $('#date-picker-since').data('DateTimePicker').destroy();
+                }
+                datepicker = $('#date-picker-since').datetimepicker({
+                    format: 'YYYY-MM-DD',
+                    date: date,
+                    minDate: minDate,
+                    maxDate: maxDate,
+                });
+            }
+
             var selector_id_interval = getCookie('corona_stats_id_interval');
             if (selector_id_interval != "") {
                 $('#inputGroupSelectEntries').val(selector_id_interval);
@@ -228,6 +266,8 @@
             $('#inputGroupSelectCountries').select2({
                 theme: "bootstrap4",
             });
+
+            setDatepicker();
 
             var ctx1 = document.getElementById('chart1');
             var chart1 = new Chart(ctx1,{type:'line',data:{labels:[],datasets:[{label:'Percentaje',data:[],borderWidth:1},]},
@@ -262,13 +302,17 @@
                 }
             });
 
-            var updateChart = function(chart, chart_id, endspinner) {
+            var updateChart = function(chart, chart_id, date, endspinner) {
                 var entries = $('#inputGroupSelectEntries').val();
                 var country = $('#inputGroupSelectCountries').val();
+                if (date==false) {
+                    date = '';
+                }
                 var data = {
                     chart_id: chart_id,
                     entries: entries,
-                    country_id: country
+                    country_id: country,
+                    date: date
                 };
                 $.ajax({
                     url: "{{ route('ajax.chart') }}",
@@ -300,26 +344,34 @@
                 $('#overlay').fadeOut();
             };
 
-            var updateAllCharts = function() {
+            $('#inlineFormInputGroupSinceApply').click(function(){
+                if (datepicker!=false) {
+                    var date = $('#date-picker-since').data('DateTimePicker').date();
+                    updateAllCharts(date.format('YYYY-MM-DD'));
+                }
+            });
+
+            var updateAllCharts = function(date) {
                 startSpinner();
-                updateChart(chart1, '1', false);
-                updateChart(chart2, '2', false);
-                updateChart(chart3, '3', false);
-                updateChart(chart1b, '1b', false);
-                updateChart(chart2b, '2b', false);
-                updateChart(chart3b, '3b', false);
-                updateChart(chart1c, '1c', false);
-                updateChart(chart2c, '2c', true);
+                updateChart(chart1, '1', date, false);
+                updateChart(chart2, '2', date, false);
+                updateChart(chart3, '3', date, false);
+                updateChart(chart1b, '1b', date, false);
+                updateChart(chart2b, '2b', date, false);
+                updateChart(chart3b, '3b', date, false);
+                updateChart(chart1c, '1c', date, false);
+                updateChart(chart2c, '2c', date, true);
             };
 
-            updateAllCharts();
+            updateAllCharts(false);
 
             $('#inputGroupSelectEntries').change(function(){
-                updateAllCharts();
+                updateAllCharts(false);
                 setCookie('corona_stats_id_interval', $('#inputGroupSelectEntries').val(), 1);
             });
 
             $('#inputGroupSelectCountries').change(function(){
+                setDatepicker();
                 updateAllCharts();
                 setCookie('corona_stats_country_id', $('#inputGroupSelectCountries').val(), 1);
             });
