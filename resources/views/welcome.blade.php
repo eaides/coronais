@@ -71,6 +71,10 @@
             .select2-container > .selection > .select2-selection--single {
                 border-radius: 0 .25rem .25rem 0 !important;
             }
+
+            .select2.select2-container.select2-container--bootstrap4 {
+                max-width: 200px !important;
+            }
         </style>
 
     </head>
@@ -97,7 +101,7 @@
                     <h2>Corona Virus <small class="text-muted">(statistic)</small></h2>
                 </div><br><br>
                 <div class="col-md-4 offset-md-1 justify-content-center">
-                    <div class="input-group mb-1">
+                    <div class="input-group mb-1 justify-content-center">
                         <div class="input-group-prepend">
                             <label class="input-group-text" for="inputGroupSelectEntries">Graph Last:</label>
                         </div>
@@ -115,7 +119,7 @@
                 </div>
 
                 <div class="col-md-4 offset-md-1 justify-content-center">
-                    <div class="input-group mb-1">
+                    <div class="input-group mb-1 justify-content-center">
                         <div class="input-group-prepend">
                             <label class="input-group-text" for="inputGroupSelectCountries">Country:</label>
                         </div>
