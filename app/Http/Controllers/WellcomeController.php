@@ -68,7 +68,10 @@ class WellcomeController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param $chart_id
+     * @param $entries
+     * @param $country_id
+     * @param $date
      * @return array
      */
     protected function getStatChartsData($chart_id, $entries, $country_id, $date=false): array
@@ -165,4 +168,61 @@ class WellcomeController extends Controller
         }
         return array($labels, $data);
     }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\View\View|\Illuminate\Http\Response
+     * @throws \Exception
+     */
+    public function ajaxDataAll(Request $request)
+    {
+        if ($request->ajax()) {
+            $chart_id = $request->chart_id;
+            list($labels, $data, $last_date) = $this->getStatChartsDataAll($chart_id);
+            return response()->json(compact('labels','data', 'last_date'));
+        }
+        return response()->json(['failure'=>'meyhod must call by ajax.']);
+    }
+
+    /**
+     * @param $chart_id
+     * @return array
+     */
+    protected function getStatChartsDataAll($chart_id): array
+    {
+        $labels = [];
+        $data = [];
+        $last_date = false;
+        $countries = Country::all();
+        foreach($countries as $country) {
+            if ($country->twoChars == '--') continue;
+            $stat = Statistic::where('country_id', $country->id)
+                ->OrderBy('dateis','desc')
+                ->first();
+            if ($stat) {
+                if (!$last_date) {
+                    $last_date = $stat->dateis;
+                } else {
+                    if ($last_date != $stat->dateis) continue;
+                }
+                $labels[] = $country->twoChars;
+                switch ($chart_id) {
+                    case '5a':
+                        $data[] = $stat->total_percent_vs_population;
+                        break;
+                    case '5b':
+                        $data[] = $stat->actives_percent_vs_population;
+                        break;
+                    case '5c':
+                        $data[] = $stat->death_percent_vs_population;
+                        break;
+                    case '5d':
+                        $data[] = $stat->recovered_percent_vs_population;
+                        break;
+                }
+            }
+        }
+        return array($labels, $data, $last_date);
+    }
+
 }

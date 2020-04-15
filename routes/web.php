@@ -26,6 +26,7 @@ Route::resource('ajaxStatistic','StatisticController');
 Route::resource('country','CountryController');
 
 Route::post('ajaxChart', 'WellcomeController@ajaxData')->name('ajax.chart');
+Route::post('ajaxChartAll', 'WellcomeController@ajaxDataAll')->name('ajax.chartall');
 
 
 
