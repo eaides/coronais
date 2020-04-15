@@ -25,27 +25,9 @@
                 <div class="card-header">
                     <div class="row justify-content-center">
                         <div class="col-md-6">
-                            <h4 class="card-title">Corona Virus Statistics
-                                <a class="btn btn-success ml-5" href="javascript:void(0)" id="createNewItem"> Create New Data</a>
+                            <h4 class="card-title">Countries
+                                <a class="btn btn-success ml-5" href="javascript:void(0)" id="createNewItem">Create New Country</a>
                             </h4>
-                        </div>
-                        <div class="col-md-4 offset-md-1 justify-content-center">
-                            <div class="input-group mb-1">
-                                <div class="input-group-prepend">
-                                    <label class="input-group-text" for="inputGroupSelectCountries">Country:</label>
-                                </div>
-                                <select class="custom-select" id="inputGroupSelectCountries">
-                                    @foreach($countries as $country)
-                                        @php
-                                            $selected = '';
-                                            if (strtoupper($country->twoChars) == 'IL') {
-                                                $selected = 'selected';
-                                            }
-                                        @endphp
-                                        <option data-url="{{$country->url}}" value="{{$country->id}}" {{$selected}}>{{$country->name}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -60,13 +42,11 @@
                     <table class="table table-bordered data-table" id="dataTable">
                         <thead>
                         <tr>
-                            <th>Total Quantity</th>
-                            <th>Total % diff</th>
-                            <th>Actives</th>
-                            <th>Active % diff.</th>
-                            <th width="10%">Deaths</th>
-                            <th>% death</th>
-                            <th>Date</th>
+                            <th>Country</th>
+                            <th>ID</th>
+                            <th>Source Url</th>
+                            <th>population</th>
+                            <th>Last Update</th>
                             <th width="15%">Action</th>
                         </tr>
                         </thead>
@@ -83,31 +63,35 @@
                                 </div>
                                 <div class="modal-body">
                                     <form id="dataForm" action="" method="post" class="form-horizontal needs-validation">
-                                        Source: <a id="country_url" href="" target="_blank">...</a>
                                         <div class="form-group">
                                             <div style="display:none" class="generic-invalid-feedback-generic invalid-feedback is-invalid"></div>
                                         </div>
                                         <input type="hidden" name="data_id" id="data_id">
-                                        <input type="hidden" name="country_id" id="country_id" value="">
+
                                         <div class="form-group">
-                                            <label for="name" class="col-sm-12 control-label">Total Quantity</label>
-                                            <input type="number" class="form-control" id="qty" name="qty" placeholder="Enter total quantity" value="" maxlength="50" required>
-                                            <div id="invalid-feedback-qty" class="invalid-feedback is-invalid">Numeric value is required</div>
+                                            <label for="name" class="col-sm-12 control-label">Country Name</label>
+                                            <input type="text" class="form-control" id="name" name="name" placeholder="Country name" value="" maxlength="50" required>
+                                            <div id="invalid-feedback-name" class="invalid-feedback is-invalid">The country name is required</div>
                                         </div>
                                         <div class="form-group">
-                                            <label class="col-sm-12 control-label">Actives</label>
-                                            <input type="number" class="form-control" id="actives" name="actives" placeholder="Enter total quantity" value="" maxlength="50">
-                                            <div id="invalid-feedback-actives" class="invalid-feedback is-invalid">Only numeric value</div>
+                                            <label class="col-sm-12 control-label">ID (2 characters)</label>
+                                            <input type="text" class="form-control" id="twoChars" name="twoChars" placeholder="Enter ID (2 chars)" value="" maxlength="50" required>
+                                            <div id="invalid-feedback-twoChars" class="invalid-feedback is-invalid">The ID is required</div>
                                         </div>
                                         <div class="form-group">
-                                            <label class="col-sm-12 control-label">Death</label>
-                                            <input type="number" class="form-control" id="death" name="death" placeholder="Enter total quantity" value="" maxlength="50">
-                                            <div id="invalid-feedback-death" class="invalid-feedback is-invalid">Only numeric value</div>
+                                            <label class="col-sm-12 control-label">url for data scrapping</label>
+                                            <input type="text" class="form-control" id="url" name="url" placeholder="Enter URL" value="" maxlength="50" required>
+                                            <div id="invalid-feedback-twoChars" class="invalid-feedback is-invalid">The url is required</div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-12 control-label">Population</label>
+                                            <input type="number" class="form-control" id="population" name="population" placeholder="Enter population quantity" value="" maxlength="50">
+                                            <div id="invalid-feedback-population" class="invalid-feedback is-invalid">Only numeric value</div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-sm-12 control-label">Date</label>
-                                            <input type="text" class="form-control" id="dateis" name="dateis" placeholder="Date in format yyyy-mm-dd" value="" maxlength="50" required>
-                                            <div id="invalid-feedback-dateis" class="invalid-feedback is-invalid">Mandatory valid date</div>
+                                            <input type="text" class="form-control" id="last_dateis" name="last_dateis" placeholder="Date in format yyyy-mm-dd" value="" maxlength="50">
+                                            <div id="invalid-feedback-last_dateis" class="invalid-feedback is-invalid">entry a valid date</div>
                                         </div>
                                         <div class="text-center">
                                             <button type="submit" class="btn btn-primary" id="saveBtn" value="create">Save changes</button>
@@ -128,16 +112,6 @@
 @section('body_scripts')
     <script>
         var reOrder = false;
-        var selector_country_id = getCookie('corona_stats_country_id');
-        if (selector_country_id != "") {
-            $('#inputGroupSelectCountries').val(selector_country_id);
-        }
-        setCookie('corona_stats_country_id', $('#inputGroupSelectCountries').val(), 1);
-
-        // select 2
-        $('#inputGroupSelectCountries').select2({
-            theme: "bootstrap4",
-        });
 
         function padDigits(num, size) {
             num = parseInt(num);
@@ -173,15 +147,15 @@
                 $("#comfirmModal").modal("hide");
             });
 
-                //Pass false to callback function
+            //Pass false to callback function
             $(".btn-no").click(function () {
                 handler(false);
                 $("#comfirmModal").modal("hide");
             });
 
-                //Remove the modal once it is closed.
+            //Remove the modal once it is closed.
             $("#comfirmModal").on('hidden.bs.modal', function () {
-            $("#comfirmModal").remove();
+                $("#comfirmModal").remove();
             });
         }
 
@@ -192,13 +166,6 @@
         });
 
         $(document).ready(function() {
-
-            function displayCountryUrl() {
-                var url = $('#inputGroupSelectCountries option:selected').data('url');
-                $('#country_url').attr("href", url);
-                $('#country_url').text(url);
-            }
-
             function formClearFeedback(formID) {
                 $(formID).removeClass('was-validated');
                 $(formID).removeClass('needs-validated');
@@ -236,35 +203,20 @@
                 return false;
             }
 
-            $('#country_id').val($('#inputGroupSelectCountries').val());
-            displayCountryUrl();
-
             var table = $('#dataTable').DataTable({
                 "processing": true,
                 "serverSide": true,
                 "ajax": {
-                    "url": "{{route('ajaxStatistic.index')}}",
-                    "data": function ( d ) {
-                        d.country_id = $('#country_id').val();
-                    }
+                    "url": "{{route('country.index')}}"
                 },
                 "columns": [
-                    {"data": "qty"},
-                    {"data": "percent"},
-                    {"data": "actives"},
-                    {"data": "active_percent"},
-                    {"data": "death"},
-                    {"data": "death_percent"},
-                    {"data": "dateis"},
+                    {"data": "name"},
+                    {"data": "twoChars"},
+                    {"data": "url"},
+                    {"data": "population"},
+                    {"data": "last_dateis"},
                     {data: 'action', name: 'action', orderable: false, searchable: false}
                 ]
-            });
-
-            $('#inputGroupSelectCountries').change(function(){
-                $('#country_id').val($(this).val());
-                displayCountryUrl();
-                setCookie('corona_stats_country_id', $('#inputGroupSelectCountries').val(), 1);
-                table.draw(true);
             });
 
             $('#createNewItem').click(function () {
@@ -275,26 +227,25 @@
                 $('#saveBtn').val("create-Item");
                 $('#dataForm').trigger("reset");
                 $('#data_id').val("");
-                $('#dateis').val(nowIsStr);
-                $('#country_id').val($('#inputGroupSelectCountries').val());
+                $('#last_dateis').val('2020-01-01');  // nowIsStr
                 $('#modelHeading').html("Create New Data");
                 $('#ajaxModel').modal({backdrop: "static"});
                 reOrder = true;
             });
 
             $('body').on('click', '.editItem', function () {
-                formClearFeedback('#dataForm');
                 var data_id = $(this).data('id');
-                $.get("{{ route('ajaxStatistic.index') }}" +'/' + data_id +'/edit', function (data) {
+                formClearFeedback('#dataForm');
+                $.get("{{ route('country.index') }}" +'/' + data_id +'/edit', function (data) {
                     $('#modelHeading').html("Edit Item");
                     $('#saveBtn').val("edit-data");
                     $('#ajaxModel').modal('show');
                     $('#data_id').val(data.id);
-                    $('#qty').val(data.qty);
-                    $('#death').val(data.death);
-                    $('#actives').val(data.actives);
-                    $('#dateis').val(data.dateis);
-                    $('#country_id').val(data.country_id);
+                    $('#name').val(data.name);
+                    $('#twoChars').val(data.twoChars);
+                    $('#url').val(data.url);
+                    $('#last_dateis').val(data.last_dateis);
+                    $('#population').val(data.population);
                     reOrder = false;
                 })
             });
@@ -312,7 +263,7 @@
                     $('#saveBtn').html('Sending..');
                     $.ajax({
                         data: form_data,
-                        url: "{{ route('ajaxStatistic.store') }}",
+                        url: "{{ route('country.store') }}",
                         type: "POST",
                         dataType: 'json',
                         success: function (data) {
@@ -341,7 +292,7 @@
                     if (ans) {
                         $.ajax({
                             type: "DELETE",
-                            url: "{{ route('ajaxStatistic.store') }}"+'/'+data_id,
+                            url: "{{ route('country.store') }}"+'/'+data_id,
                             success: function (data) {
                                 table.draw(false);
                             },

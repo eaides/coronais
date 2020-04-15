@@ -10,6 +10,8 @@ class Country extends Model
         'name',
         'twoChars',
         'url',
+        'last_dateis',
+        'population',
     ];
 
     /**

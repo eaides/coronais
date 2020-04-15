@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Country;
 use App\Statistic;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Yajra\Datatables\Datatables;
 
 class StatisticController extends Controller
@@ -45,6 +46,7 @@ class StatisticController extends Controller
         }
         return view('Statistic.ajax',compact('items'));
     }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -58,13 +60,51 @@ class StatisticController extends Controller
         {
             $country_id = $request->country_id;
         }
+        $data = $request->all();
+        if (is_null($data['actives'])) $data['actives'] = 0;
+        if (is_null($data['death'])) $data['death'] = 0;
+
+        $validatedData = Validator::make($data, [
+            'country_id' => 'required|numeric|min:1',
+            'qty'        => 'required|numeric|min:0',
+            'actives'    => 'numeric|min:0',
+            'death'      => 'numeric|min:0',
+            'dateis'     => 'date',
+        ]);
+        // validate data
+        if ($validatedData->invalid()) {
+            return response()->json(json_encode($validatedData->errors()->getMessages()));
+        }
+        // check register to be created or updated
+        if (!$request->data_id) {
+            $stat = Statistic::where('country_id',$country_id)
+                ->where('dateis', $data['dateis'])->first();
+            if ($stat) {
+                return response()->json(['failure'=>'country/date already exists']);
+            }
+        } else {
+            $stat = Statistic::find($request->data_id);
+            if (!$stat) {
+                // not exists, can not update
+                return response()->json(['failure'=>'requested ID not exists']);
+            } else {
+                $otherStat = Statistic::where('country_id',$country_id)
+                    ->where('dateis', $data['dateis'])
+                    ->where('id','!=',$request->data_id)
+                    ->first();
+                if ($otherStat) {
+                    // already exists date
+                    return response()->json(['failure'=>'country/date already exists']);
+                }
+            }
+        }
         Statistic::updateOrCreate(['id' => $request->data_id],
             [
                 'country_id' => $country_id,
-                'qty' => $request->qty,
-                'actives' => $request->actives,
-                'death' => $request->death,
-                'dateis' => $request->dateis,
+                'qty' => $data['qty'],
+                'actives' => $data['actives'],
+                'death' => $data['death'],
+                'dateis' => $data['dateis'],
                 'percent' => null,
                 'diff' => null,
                 'diff_actives' => null,
