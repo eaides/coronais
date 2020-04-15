@@ -501,7 +501,7 @@ class StatisticController extends Controller
                 $recovered = $statNoRecoveredOne->qty
                                 - $statNoRecoveredOne->actives
                                 - $statNoRecoveredOne->death;
-                if (!$recovered) {
+                if ($recovered) {
                     $statNoRecoveredOne->recovered = $recovered;
                     $statNoRecoveredOne->save();
                 } else {
