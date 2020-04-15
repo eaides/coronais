@@ -77,7 +77,10 @@ class WellcomeController extends Controller
             $stats = Statistic::select('id', 'country_id',
                 'qty', 'percent', 'diff',
                 'actives', 'diff_actives', 'active_percent',
-                'death', 'death_percent',
+                'death', 'death_diff', 'death_percent',
+                'recovered', 'recovered_diff', 'recovered_percent',
+                'total_percent_vs_population', 'actives_percent_vs_population',
+                'death_percent_vs_population', 'recovered_percent_vs_population',
                 'dateis')
                 ->where('country_id', $country_id)
                 ->orderBy('dateis', 'asc')
@@ -91,7 +94,10 @@ class WellcomeController extends Controller
             $stats = Statistic::select('id', 'country_id',
                 'qty', 'percent', 'diff',
                 'actives', 'diff_actives', 'active_percent',
-                'death', 'death_percent',
+                'death', 'death_diff', 'death_percent',
+                'recovered', 'recovered_diff', 'recovered_percent',
+                'total_percent_vs_population', 'actives_percent_vs_population',
+                'death_percent_vs_population', 'recovered_percent_vs_population',
                 'dateis')
                 ->where('country_id', $country_id)
                 ->where('dateis', '>=', $date)
@@ -127,6 +133,33 @@ class WellcomeController extends Controller
             case '2c':
                 $data = $stats->pluck('death');
                 break;
+            case '3c':
+                $data = $stats->pluck('death_diff');
+                break;
+
+            case '1d':
+                $data = $stats->pluck('recovered_percent');
+                break;
+            case '2d':
+                $data = $stats->pluck('recovered');
+                break;
+            case '3d':
+                $data = $stats->pluck('recovered_diff');
+                break;
+
+            case '4a':
+                $data = $stats->pluck('total_percent_vs_population');
+                break;
+            case '4b':
+                $data = $stats->pluck('actives_percent_vs_population');
+                break;
+            case '4c':
+                $data = $stats->pluck('death_percent_vs_population');
+                break;
+            case '4d':
+                $data = $stats->pluck('recovered_percent_vs_population');
+                break;
+
             default:
                 $data = [];
         }

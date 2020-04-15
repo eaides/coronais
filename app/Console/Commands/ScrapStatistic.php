@@ -165,11 +165,23 @@ class ScrapStatistic extends Command
                                 $newStat->actives = $actives;
                                 $newStat->death = $deaths;
                                 //
-                                $newStat->percent = null;
                                 $newStat->diff = null;
+                                $newStat->percent = null;
+                                //
                                 $newStat->diff_actives = null;
                                 $newStat->active_percent = null;
+                                //
+                                $newStat->death_diff = null;
                                 $newStat->death_percent = null;
+                                //
+                                $newStat->recovered = null;
+                                $newStat->recovered_diff = null;
+                                $newStat->recovered_percent = null;
+                                //
+                                $newStat->total_percent_vs_population = null;
+                                $newStat->actives_percent_vs_population = null;
+                                $newStat->death_percent_vs_population = null;
+                                $newStat->recovered_percent_vs_population = null;
                                 //
                                 $newStat->save();
                                 $addNew = true;
