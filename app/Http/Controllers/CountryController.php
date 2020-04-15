@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Country;
+use App\Statistic;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -86,6 +87,15 @@ class CountryController extends Controller
         if ($validatedData->invalid()) {
             return response()->json(json_encode($validatedData->errors()->getMessages()));
         }
+        $changed = false;
+        if ($request->data_id) {
+            $actual = Country::find($request->data_id);
+            if ($actual) {
+                if ($actual->population != $data['population']) {
+                    $changed = true;
+                }
+            }
+        }
         Country::updateOrCreate(['id' => $request->data_id],
             [
                 'name' => $data['name'],
@@ -95,6 +105,18 @@ class CountryController extends Controller
                 'last_dateis' => $data['last_dateis'],
             ]
         );
+        if ($changed) {
+            $stats = Statistic::where('country_id', $request->data_id)->get();
+            foreach($stats as $stat) {
+                $stat->total_percent_vs_population = null;
+                $stat->actives_percent_vs_population = null;
+                $stat->death_percent_vs_population = null;
+                $stat->recovered_percent_vs_population = null;
+                $stat->save();
+            }
+            $controller = new StatisticController();
+            $controller->calculatePercentDiff($request->data_id);
+        }
         return response()->json(['success'=>'Country saved successfully.']);
     }
 
