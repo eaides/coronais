@@ -81,7 +81,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label class="col-sm-12 control-label">url for data scrapping</label>
-                                            <input type="text" class="form-control" id="url" name="url" placeholder="Enter URL" value="" maxlength="50" required>
+                                            <input type="text" class="form-control" id="url" name="url" placeholder="Enter URL" value="" maxlength="250" required>
                                             <div id="invalid-feedback-twoChars" class="invalid-feedback is-invalid">The url is required</div>
                                         </div>
                                         <div class="form-group">
