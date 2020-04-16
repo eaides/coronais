@@ -63,6 +63,7 @@
                                 </div>
                                 <div class="modal-body">
                                     <form id="dataForm" action="" method="post" class="form-horizontal needs-validation">
+                                        Source: <a id="country_url" href="https://www.worldometers.info/population/world/" target="_blank">https://www.worldometers.info/population/world/</a>
                                         <div class="form-group">
                                             <div style="display:none" class="generic-invalid-feedback-generic invalid-feedback is-invalid"></div>
                                         </div>
