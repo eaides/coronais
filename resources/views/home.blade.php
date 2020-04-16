@@ -132,7 +132,7 @@
         if (selector_country_id != "") {
             $('#inputGroupSelectCountries').val(selector_country_id);
         }
-        setCookie('corona_stats_country_id', $('#inputGroupSelectCountries').val(), 1);
+        setCookie('corona_stats_country_id', $('#inputGroupSelectCountries').val(), 7);
 
         // select 2
         $('#inputGroupSelectCountries').select2({
@@ -263,7 +263,7 @@
             $('#inputGroupSelectCountries').change(function(){
                 $('#country_id').val($(this).val());
                 displayCountryUrl();
-                setCookie('corona_stats_country_id', $('#inputGroupSelectCountries').val(), 1);
+                setCookie('corona_stats_country_id', $('#inputGroupSelectCountries').val(), 7);
                 table.draw(true);
             });
 

@@ -42,7 +42,8 @@ class WellcomeController extends Controller
                 'date' => $date,
             ];
         }
-        return view('welcome', compact('countries'));
+        $countriesLabel = Country::where('twoChars','!=','--')->get();
+        return view('welcome', compact('countries', 'countriesLabel'));
     }
 
     /**
@@ -178,7 +179,9 @@ class WellcomeController extends Controller
     {
         if ($request->ajax()) {
             $chart_id = $request->chart_id;
-            list($labels, $data, $last_date) = $this->getStatChartsDataAll($chart_id);
+            $countries = $request->countries;
+            $countries = json_decode($countries, true);
+            list($labels, $data, $last_date) = $this->getStatChartsDataAll($chart_id, $countries);
             return response()->json(compact('labels','data', 'last_date'));
         }
         return response()->json(['failure'=>'meyhod must call by ajax.']);
@@ -186,14 +189,27 @@ class WellcomeController extends Controller
 
     /**
      * @param $chart_id
+     * @param array $countries
      * @return array
      */
-    protected function getStatChartsDataAll($chart_id): array
+    protected function getStatChartsDataAll($chart_id, array $countries=array()): array
     {
         $labels = [];
         $data = [];
         $last_date = false;
-        $countries = Country::all();
+        $all_countries = Country::all();
+        if (!empty($countries)) {
+            $filtered_countries = array();
+            foreach($all_countries as $country) {
+                $id = $country->id;
+                if (in_array($id, $countries)) {
+                    $filtered_countries[] = $country;
+                }
+            }
+            $countries = $filtered_countries;
+        } else {
+            $countries = $all_countries;
+        }
         foreach($countries as $country) {
             if ($country->twoChars == '--') continue;
             $stat = Statistic::where('country_id', $country->id)

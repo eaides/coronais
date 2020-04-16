@@ -72,6 +72,15 @@
                 padding-top: 10px !important;
                 margin-top: 5px !important;
             }
+
+            .country-labels button {
+                margin-top: 5px !important;
+                margin-bottom: 5px !important;
+                margin-left: 5px !important;
+                margin-right: 5px !important;
+                min-width: 150px !important;
+            }
+
         </style>
 
     </head>
@@ -251,6 +260,31 @@
                     </div>
                     <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
                         <div class="card-body">
+                            <form id="countries-labels-form">
+                                <div class="row country-labels">
+                                    @foreach($countriesLabel as $label)
+                                        <div class="col-md-3 text-center align-middle">
+                                            <div class="form-check align-middle">
+                                                <input class="form-check-input county-label-check" type="checkbox" value="county-label-check-{{$label->id}}" id="county-label-check-{{$label->id}}" checked>
+                                                <label class="form-check-label" for="county-label-check-{{$label->id}}">
+                                                    <button id="county-label-button-{{$label->id}}" type="button" class="btn btn-secondary county-label-button">
+                                                        <span class="badge badge-light">{{$label->twoChars}}</span>&nbsp;&nbsp;{{$label->name}}
+                                                    </button>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                                <hr>
+                                <div class="row country-labels text-center">
+                                    <div class="col-md-12 text-center">
+                                        <button id="country-label-filter" type="button" class="btn btn-primary">
+                                            Apply countries filter
+                                        </button>
+                                    </div>
+                                </div>
+                                <hr>
+                            </form>
                             <div class="row text-center">
                                 <div class="col-md-6">
                                     <h4>Total cases over population (<small class="countries-last-day"></small>)</h4>
@@ -329,13 +363,13 @@
             if (selector_id_interval != "") {
                 $('#inputGroupSelectEntries').val(selector_id_interval);
             }
-            setCookie('corona_stats_id_interval', $('#inputGroupSelectEntries').val(), 1);
+            setCookie('corona_stats_id_interval', $('#inputGroupSelectEntries').val(), 7);
 
             var selector_country_id = getCookie('corona_stats_country_id');
             if (selector_country_id != "") {
                 $('#inputGroupSelectCountries').val(selector_country_id);
             }
-            setCookie('corona_stats_country_id', $('#inputGroupSelectCountries').val(), 1);
+            setCookie('corona_stats_country_id', $('#inputGroupSelectCountries').val(), 7);
 
             // select 2
             $('#inputGroupSelectEntries').select2({
@@ -420,8 +454,15 @@
                 options:{scales:{xAxes:[],yAxes:[{ticks:{beginAtZero:true}}]}}});
 
             var updateChartCountries = function(chart, chart_id, endspinner) {
+                // read Cookies and set to the ajax
+                var countries = getCookie('corona_stats_countries_filtered');
+                // console.log('countries',countries);
+                if (countries == '') {
+                    countries = "[]";
+                }
                 var data = {
                     chart_id: chart_id,
+                    countries: countries
                 };
                 $.ajax({
                     url: "{{ route('ajax.chartall') }}",
@@ -531,18 +572,83 @@
                 updateChart(chart4d, '4d', date, true);
             };
 
+            function checkUncheckCountriesFiltered() {
+                var countries = [];
+                var json_data = getCookie('corona_stats_countries_filtered');
+                if (json_data != '') {
+                    countries = JSON.parse(json_data);
+                    $('input:checkbox.county-label-check').each(function () {
+                        var check_id = $(this).prop('id');
+                        var check_id_number = check_id.substr(19);
+                        if (countries.indexOf(check_id_number) >= 0) {
+                            console.log(check_id_number + ' esta seleccionado');
+                            $("#"+check_id).prop("checked", true);
+                        } else {
+                            console.log(check_id_number + ' NO esta seleccionado');
+                            $("#"+check_id).prop("checked", false);
+                        }
+                    });
+                }
+            }
+
             updateAllCharts(false);
+            checkUncheckCountriesFiltered();
             updateAllChartsCountries();
 
             $('#inputGroupSelectEntries').change(function(){
                 updateAllCharts(false);
-                setCookie('corona_stats_id_interval', $('#inputGroupSelectEntries').val(), 1);
+                setCookie('corona_stats_id_interval', $('#inputGroupSelectEntries').val(), 7);
             });
 
             $('#inputGroupSelectCountries').change(function(){
                 setDatepicker();
                 updateAllCharts();
-                setCookie('corona_stats_country_id', $('#inputGroupSelectCountries').val(), 1);
+                setCookie('corona_stats_country_id', $('#inputGroupSelectCountries').val(), 7);
+            });
+
+            $('.county-label-button').click(function() {
+                var button_id = $(this).prop('id');
+                var id = button_id.substr(20);         // county-label-button-
+                var check_id = '#county-label-check-' + id;
+                $(check_id).click();
+            });
+
+            $('#country-label-filter').click(function() {
+                var filtered = [];
+                var actual = 0;
+                $('input:checkbox.county-label-check').each(function () {
+                    var sThisVal = (this.checked ? $(this).val() : "");
+                    var check_id = $(this).prop('id');
+                    if (sThisVal!="") {
+                        actual++;
+                        filtered.push(check_id.substr(19));
+                    }
+                });
+                if (actual==0) {
+                    var check_id = '#county-label-check-1';
+                    $(check_id).click();
+                    filtered.push(1);
+                    var check_id = '#county-label-check-2';
+                    $(check_id).click();
+                    filtered.push(2);
+                } else if (actual == 1) {
+                    $('input:checkbox.county-label-check').each(function () {
+                        var sThisVal = (this.checked ? $(this).val() : "");
+                        var check_id = $(this).prop('id');
+                        if (sThisVal=="") {
+                            $('#'+check_id).click();
+                            filtered.push(check_id.substr(19));
+                            return false;
+                        }
+                    });
+                }
+                // save the Cookies
+                var filtered_json = JSON.stringify(filtered);
+                // console.log('filtered',filtered_json);
+                setCookie('corona_stats_countries_filtered', filtered_json, 7);
+
+                // refresh the statistics
+                updateAllChartsCountries();
             });
 
         </script>

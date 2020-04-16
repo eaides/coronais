@@ -45,7 +45,7 @@ class ScrapStatistic extends Command
             $url = $country->url;
             $last_dateis = $country->last_dateis;
             $country_id = $country->id;
-            $addNew = false;
+            $addNewOrUpdate = false;
             if (!empty($url))
             {
                 $subject = file_get_contents($url);
@@ -156,36 +156,37 @@ class ScrapStatistic extends Command
                                 ->where('dateis',$date_is)
                                 ->first();
                             if (!$stat) {
-                                $newStat = new Statistic;
+                                $stat = new Statistic;
                                 //
-                                $newStat->country_id = $country_id;
-                                $newStat->dateis = $date_is;
-                                //
-                                $newStat->qty = $qty;
-                                $newStat->actives = $actives;
-                                $newStat->death = $deaths;
-                                //
-                                $newStat->diff = null;
-                                $newStat->percent = null;
-                                //
-                                $newStat->diff_actives = null;
-                                $newStat->active_percent = null;
-                                //
-                                $newStat->death_diff = null;
-                                $newStat->death_percent = null;
-                                //
-                                $newStat->recovered = null;
-                                $newStat->recovered_diff = null;
-                                $newStat->recovered_percent = null;
-                                //
-                                $newStat->total_percent_vs_population = null;
-                                $newStat->actives_percent_vs_population = null;
-                                $newStat->death_percent_vs_population = null;
-                                $newStat->recovered_percent_vs_population = null;
-                                //
-                                $newStat->save();
-                                $addNew = true;
+                                $stat->country_id = $country_id;
+                                $stat->dateis = $date_is;
                             }
+                            //
+                            $stat->qty = $qty;
+                            $stat->actives = $actives;
+                            $stat->death = $deaths;
+                            //
+                            $stat->diff = null;
+                            $stat->percent = null;
+                            //
+                            $stat->diff_actives = null;
+                            $stat->active_percent = null;
+                            //
+                            $stat->death_diff = null;
+                            $stat->death_percent = null;
+                            //
+                            $stat->recovered = null;
+                            $stat->recovered_diff = null;
+                            $stat->recovered_percent = null;
+                            //
+                            $stat->total_percent_vs_population = null;
+                            $stat->actives_percent_vs_population = null;
+                            $stat->death_percent_vs_population = null;
+                            $stat->recovered_percent_vs_population = null;
+                            //
+                            $stat->save();
+                            //
+                            $addNewOrUpdate = true;
                         }
                         if ($new_last_dateis) {
                             $country->last_dateis = $new_last_dateis;
@@ -193,7 +194,7 @@ class ScrapStatistic extends Command
                         }
                     }
                 }
-                if ($addNew) {
+                if ($addNewOrUpdate) {
                     // calculate
                     $controller = new StatisticController();
                     $controller->calculatePercentDiff($country_id);
