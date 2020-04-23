@@ -169,6 +169,7 @@ return [
         Barryvdh\Debugbar\ServiceProvider::class,
         Anhskohbo\NoCaptcha\NoCaptchaServiceProvider::class,
         ConsoleTVs\Charts\ChartsServiceProvider::class,
+        Artesaos\SEOTools\Providers\SEOToolsServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -234,6 +235,7 @@ return [
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
         'NoCaptcha' => Anhskohbo\NoCaptcha\Facades\NoCaptcha::class,
+        'SEO' => Artesaos\SEOTools\Facades\SEOTools::class,
     ],
 
 ];
