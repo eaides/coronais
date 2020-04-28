@@ -230,6 +230,9 @@ class StatisticController extends Controller
                 if ($last)
                 {
                     $qtyBefore = $last->qty;
+                    if ($qtyBefore == 0) {
+                        $qtyBefore = 1;
+                    }
                     $number = $qty / $qtyBefore;
                     $percent = ($number - 1) * 100;
                     $percent = round($percent, 4);
@@ -282,6 +285,9 @@ class StatisticController extends Controller
                 if ($last)
                 {
                     $activesBefore = $last->actives;
+                    if ($activesBefore == 0) {
+                        $activesBefore = 1;
+                    }
                     $number = $actives / $activesBefore;
                     $active_percent = ($number - 1) * 100;
                     $active_percent = round($active_percent, 4);
