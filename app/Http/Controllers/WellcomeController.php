@@ -43,7 +43,8 @@ class WellcomeController extends Controller
             ];
         }
         $countriesLabel = Country::where('twoChars','!=','--')->get();
-        return view('welcome', compact('countries', 'countriesLabel'));
+        $countryWorld = Country::where('twoChars','=','--')->get()->first();
+        return view('welcome', compact('countries', 'countriesLabel', 'countryWorld'));
     }
 
     /**
@@ -129,6 +130,9 @@ class WellcomeController extends Controller
                 break;
             case '3b':
                 $data = $stats->pluck('diff_actives');
+                break;
+            case 'Allb':
+                $data = $stats->pluck('actives');
                 break;
 
             case '1c':

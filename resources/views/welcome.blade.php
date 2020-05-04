@@ -307,6 +307,32 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="card">
+                    <div class="card-header" id="heading3">
+                        <h5 class="mb-0 text-center">
+                            <button class="btn btn-link collapsed text-center my-acordion" type="button" data-toggle="collapse" data-target="#collapse3" aria-expanded="false" aria-controls="collapse3">
+                                <h3>All countries - Active cases</h3>
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="collapse3" class="collapse" aria-labelledby="heading3" data-parent="#accordionExample">
+                        <div class="card-body">
+                            <div class="row text-center">
+                                @foreach($countriesLabel as $label)
+                                    <div class="col-md-6">
+                                        <h4>{{ $label->name }}</h4>
+                                        <canvas id="chart-active-{{ $label->twoChars }}"></canvas>
+                                    </div>
+                                @endforeach
+                                <div class="col-md-6">
+                                    <h4>{{ $countryWorld->name }}</h4>
+                                    <canvas id="chart-active-{{ $countryWorld->twoChars }}"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </div>
@@ -490,9 +516,12 @@
                 });
             };
 
-            var updateChart = function(chart, chart_id, date, endspinner) {
+            var updateChart = function(chart, chart_id, date, endspinner, forceCountry) {
                 var entries = $('#inputGroupSelectEntries').val();
                 var country = $('#inputGroupSelectCountries').val();
+                if (forceCountry !== false) {
+                    country = forceCountry;
+                }
                 if (date==false) {
                     date = '';
                 }
@@ -551,26 +580,39 @@
             var updateAllCharts = function(date) {
                 endSpinner();
                 startSpinner();
-                updateChart(chart1, '1', date, false);
-                updateChart(chart2, '2', date, false);
-                updateChart(chart3, '3', date, false);
+                updateChart(chart1, '1', date, false, false);
+                updateChart(chart2, '2', date, false, false);
+                updateChart(chart3, '3', date, false, false);
 
-                updateChart(chart1b, '1b', date, false);
-                updateChart(chart2b, '2b', date, false);
-                updateChart(chart3b, '3b', date, false);
+                updateChart(chart1b, '1b', date, false, false);
+                updateChart(chart2b, '2b', date, false, false);
+                updateChart(chart3b, '3b', date, false, false);
 
-                updateChart(chart1c, '1c', date, false);
-                updateChart(chart2c, '2c', date, false);
-                updateChart(chart3c, '3c', date, false);
+                updateChart(chart1c, '1c', date, false, false);
+                updateChart(chart2c, '2c', date, false, false);
+                updateChart(chart3c, '3c', date, false, false);
 
-                updateChart(chart1d, '1d', date, false);
-                updateChart(chart2d, '2d', date, false);
-                updateChart(chart3d, '3d', date, false);
+                updateChart(chart1d, '1d', date, false, false);
+                updateChart(chart2d, '2d', date, false, false);
+                updateChart(chart3d, '3d', date, false, false);
 
-                updateChart(chart4a, '4a', date, false);
-                updateChart(chart4b, '4b', date, false);
-                updateChart(chart4c, '4c', date, false);
-                updateChart(chart4d, '4d', date, true);
+                updateChart(chart4a, '4a', date, false, false);
+                updateChart(chart4b, '4b', date, false, false);
+                updateChart(chart4c, '4c', date, false, false);
+                updateChart(chart4d, '4d', date, true, false);
+
+                var ctxAllb = false;
+                var chartAllb = false;
+                @foreach($countriesLabel as $label)
+                    ctxAllb = document.getElementById('chart-active-{{ $label->twoChars }}');
+                    chartAllb = new Chart(ctxAllb,{type:'bar',data:{labels:[],datasets:[{label:'Quantity',data:[],borderWidth:1},]},
+                    options:{scales:{xAxes:[],yAxes:[{ticks:{beginAtZero:true}}]}}});
+                    updateChart(chartAllb, 'Allb', date, true, '{{ $label->id }}');
+                @endforeach
+                ctxAllb = document.getElementById('chart-active-{{ $countryWorld->twoChars }}');
+                chartAllb = new Chart(ctxAllb,{type:'bar',data:{labels:[],datasets:[{label:'Quantity',data:[],borderWidth:1},]},
+                    options:{scales:{xAxes:[],yAxes:[{ticks:{beginAtZero:true}}]}}});
+                updateChart(chartAllb, 'Allb', date, true, '{{ $countryWorld->id }}');
             };
 
             function checkUncheckCountriesFiltered() {
