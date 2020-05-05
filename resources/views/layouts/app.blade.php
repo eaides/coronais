@@ -49,6 +49,7 @@
                 url: "{{ route('execute.scrapper') }}"
             }).always(function() {
                 endSpinner();
+                location.reload();
             });
         }
     </script>
