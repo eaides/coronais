@@ -689,13 +689,14 @@ class StatisticController extends Controller
 
     public function test()
     {
-        die('done');
+        // die('forbidden');
         $controller = new ScrapStatistic();
-        $set = $controller->setTwoCharacters('il');
+        $set = $controller->setTwoCharacters('ar');
         if ($set)
         {
             $controller->handle();
         }
+        die('done');
     }
 
 }

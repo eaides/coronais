@@ -159,6 +159,7 @@ class ScrapStatistic extends Command
                         $deaths_array = json_decode($matches[1], true);
                     }
 
+                    // remove elements when data greater than dates
                     if (count($dateis_array) < count($qty_array))
                     {
                         while (count($dateis_array) < count($qty_array))
@@ -180,6 +181,32 @@ class ScrapStatistic extends Command
                             array_shift($deaths_array);
                         }
                     }
+
+                    // add elements when data less than dates
+                    if (count($dateis_array) > count($qty_array))
+                    {
+                        while (count($dateis_array) > count($qty_array))
+                        {
+                            array_unshift($qty_array, 0);
+                        }
+                    }
+                    if (count($dateis_array) > count($actives_array))
+                    {
+                        while (count($dateis_array) > count($actives_array))
+                        {
+                            array_unshift($actives_array, 0);
+                        }
+                    }
+                    if (count($dateis_array) > count($deaths_array))
+                    {
+                        while (count($dateis_array) > count($deaths_array))
+                        {
+                            array_unshift($deaths_array, 0);
+                        }
+                    }
+
+
+
                     if (
                         count($dateis_array) == count($qty_array) &&
                         count($dateis_array) == count($actives_array) &&
