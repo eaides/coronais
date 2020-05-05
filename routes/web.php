@@ -28,8 +28,7 @@ Route::resource('country','CountryController');
 Route::post('ajaxChart', 'WellcomeController@ajaxData')->name('ajax.chart');
 Route::post('ajaxChartAll', 'WellcomeController@ajaxDataAll')->name('ajax.chartall');
 
-
-
+Route::post('executeScrapper', 'StatisticController@executeScrapper')->name('execute.scrapper');
 
 // test only
-Route::get('test', 'StatisticController@calculatePercent');
+Route::get('test', 'StatisticController@test');

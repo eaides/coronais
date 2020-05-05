@@ -9,6 +9,8 @@ use Illuminate\Console\Command;
 
 class ScrapStatistic extends Command
 {
+    protected $countryTwoCharacters = false;
+
     /**
      * The name and signature of the console command.
      *
@@ -34,13 +36,35 @@ class ScrapStatistic extends Command
     }
 
     /**
+     * @param string $two
+     * @return bool|string
+     */
+    public function setTwoCharacters(string $two)
+    {
+        $rc = false;
+        $country = Country::where('twoChars',$two)->first();
+        if (!is_null($country))
+        {
+            $rc = $country->twoChars;
+            $this->countryTwoCharacters = $rc;
+        }
+        return $rc;
+    }
+
+    /**
      * Execute the console command.
      *
      * @return mixed
      */
     public function handle()
     {
-        $countries = Country::orderBy('id')->get();
+        if (!$this->countryTwoCharacters)
+        {
+            $countries = Country::orderBy('id')->get();
+        } else
+        {
+            $countries = Country::where('twoChars',$this->countryTwoCharacters)->get();
+        }
         foreach($countries as $country) {
             $url = $country->url;
             $last_dateis = $country->last_dateis;
@@ -133,6 +157,28 @@ class ScrapStatistic extends Command
                     preg_match( $pattern , $subject, $matches);
                     if (count($matches)> 1) {
                         $deaths_array = json_decode($matches[1], true);
+                    }
+
+                    if (count($dateis_array) < count($qty_array))
+                    {
+                        while (count($dateis_array) < count($qty_array))
+                        {
+                            array_shift($qty_array);
+                        }
+                    }
+                    if (count($dateis_array) < count($actives_array))
+                    {
+                        while (count($dateis_array) < count($actives_array))
+                        {
+                            array_shift($actives_array);
+                        }
+                    }
+                    if (count($dateis_array) < count($deaths_array))
+                    {
+                        while (count($dateis_array) < count($deaths_array))
+                        {
+                            array_shift($deaths_array);
+                        }
                     }
                     if (
                         count($dateis_array) == count($qty_array) &&

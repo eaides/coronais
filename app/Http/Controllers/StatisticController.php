@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Console\Commands\ScrapStatistic;
 use App\Country;
 use App\Statistic;
 use Illuminate\Http\Request;
@@ -676,6 +677,24 @@ class StatisticController extends Controller
             $percent = round($percent, 6);
             $statNoRecoveredPercentVsPopulationOne->recovered_percent_vs_population = $percent;
             $statNoRecoveredPercentVsPopulationOne->save();
+        }
+    }
+
+    public function executeScrapper()
+    {
+        $controller = new ScrapStatistic();
+        $controller->handle();
+        return;
+    }
+
+    public function test()
+    {
+        die('done');
+        $controller = new ScrapStatistic();
+        $set = $controller->setTwoCharacters('il');
+        if ($set)
+        {
+            $controller->handle();
         }
     }
 
