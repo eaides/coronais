@@ -22,10 +22,24 @@ class WellcomeController extends Controller
         foreach($countriesEl as $countryEl) {
             $minEl = Statistic::where('country_id',$countryEl->id)
                 ->orderBy('dateis','asc')->first();
-            $min = $minEl->dateis;
+            if ($minEl)
+            {
+                $min = $minEl->dateis;
+            }
+            else
+            {
+                $min = Carbon::now()->format('Y-m-d');
+            }
             $maxEl = Statistic::where('country_id',$countryEl->id)
                 ->orderBy('dateis','desc')->first();
-            $max = $maxEl->dateis;
+            if ($maxEl)
+            {
+                $max = $maxEl->dateis;
+            }
+            else
+            {
+                $max = Carbon::now()->format('Y-m-d');
+            }
             $date = Carbon::now();
             $date->year = intval(substr($max,0,4));
             $date->month = intval(substr($max,5,2));
@@ -78,7 +92,7 @@ class WellcomeController extends Controller
      */
     protected function getStatChartsData($chart_id, $entries, $country_id, $date=false): array
     {
-        if (!$date) {
+        if (!$date || empty($date)) {
             $stats = Statistic::select('id', 'country_id',
                 'qty', 'percent', 'diff',
                 'actives', 'diff_actives', 'active_percent',
@@ -91,6 +105,9 @@ class WellcomeController extends Controller
                 ->orderBy('dateis', 'asc')
                 ->get();
             $qty = $stats->count();
+            if ($chart_id=='Allb') {
+                $entries = $qty;
+            }
             if ($qty > $entries) {
                 $sliceAt = $qty - $entries;
                 $stats = $stats->slice($sliceAt);

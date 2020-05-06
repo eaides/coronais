@@ -599,20 +599,24 @@
                 updateChart(chart4b, '4b', date, false, false);
                 updateChart(chart4c, '4c', date, false, false);
                 updateChart(chart4d, '4d', date, true, false);
+            };
 
+            function updateChartsAllRecovered() {
+                endSpinner();
+                startSpinner();
                 var ctxAllb = false;
                 var chartAllb = false;
                 @foreach($countriesLabel as $label)
                     ctxAllb = document.getElementById('chart-active-{{ $label->twoChars }}');
                     chartAllb = new Chart(ctxAllb,{type:'bar',data:{labels:[],datasets:[{label:'Quantity',data:[],borderWidth:1},]},
                     options:{scales:{xAxes:[],yAxes:[{ticks:{beginAtZero:true}}]}}});
-                    updateChart(chartAllb, 'Allb', date, true, '{{ $label->id }}');
+                    updateChart(chartAllb, 'Allb', false, false, '{{ $label->id }}');
                 @endforeach
                 ctxAllb = document.getElementById('chart-active-{{ $countryWorld->twoChars }}');
                 chartAllb = new Chart(ctxAllb,{type:'bar',data:{labels:[],datasets:[{label:'Quantity',data:[],borderWidth:1},]},
                     options:{scales:{xAxes:[],yAxes:[{ticks:{beginAtZero:true}}]}}});
-                updateChart(chartAllb, 'Allb', date, true, '{{ $countryWorld->id }}');
-            };
+                updateChart(chartAllb, 'Allb', false, true, '{{ $countryWorld->id }}');
+            }
 
             function checkUncheckCountriesFiltered() {
                 var countries = [];
@@ -636,6 +640,7 @@
             updateAllCharts(false);
             checkUncheckCountriesFiltered();
             updateAllChartsCountries();
+            updateChartsAllRecovered();
 
             $('#inputGroupSelectEntries').change(function(){
                 updateAllCharts(false);
