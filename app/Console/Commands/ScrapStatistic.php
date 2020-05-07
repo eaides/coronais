@@ -142,12 +142,31 @@ class ScrapStatistic extends Command
                     }
 
                     // Currently Infected => actives
+                    $has_currently_infected = false;
                     $pattern = "/name:\s*.*Currently Infected.*\s*.*\s*.*\s*.*\s*data:\s*(\[.*\])\s*.*\s*.*}/";
                     $matches = [];
                     $actives_array = [];
                     preg_match( $pattern , $subject, $matches);
                     if (count($matches)> 1) {
+                        $has_currently_infected = true;
                         $actives_array = json_decode($matches[1], true);
+                    }
+
+                    if (!$has_currently_infected) {
+                        $pattern = "/name:\s*.*New Recoveries.*\s*.*\s*.*\s*.*\s*data:\s*(\[.*\])\s*.*\s*.*}/";
+                        $matches = [];
+                        $new_recoveries_array = [];
+                        preg_match( $pattern , $subject, $matches);
+                        if (count($matches)> 1) {
+                            $new_recoveries_array = json_decode($matches[1], true);
+                        }
+                        $pattern = "/name:\s*.*New Cases.*\s*.*\s*.*\s*.*\s*data:\s*(\[.*\])\s*.*\s*.*}/";
+                        $matches = [];
+                        $new_cases_array = [];
+                        preg_match( $pattern , $subject, $matches);
+                        if (count($matches)> 1) {
+                            $new_cases_array = json_decode($matches[1], true);
+                        }
                     }
 
                     // Deaths => death
@@ -181,6 +200,22 @@ class ScrapStatistic extends Command
                             array_shift($deaths_array);
                         }
                     }
+                    if (!$has_currently_infected) {
+                        if (count($dateis_array) < count($new_recoveries_array))
+                        {
+                            while (count($dateis_array) < count($new_recoveries_array))
+                            {
+                                array_shift($new_recoveries_array);
+                            }
+                        }
+                        if (count($dateis_array) < count($new_cases_array))
+                        {
+                            while (count($dateis_array) < count($new_cases_array))
+                            {
+                                array_shift($new_cases_array);
+                            }
+                        }
+                    }
 
                     // add elements when data less than dates
                     if (count($dateis_array) > count($qty_array))
@@ -204,8 +239,44 @@ class ScrapStatistic extends Command
                             array_unshift($deaths_array, 0);
                         }
                     }
+                    if (!$has_currently_infected) {
+                        if (count($dateis_array) > count($new_recoveries_array))
+                        {
+                            while (count($dateis_array) > count($new_recoveries_array))
+                            {
+                                array_unshift($new_recoveries_array, 0);
+                            }
+                        }
+                        if (count($dateis_array) > count($new_cases_array))
+                        {
+                            while (count($dateis_array) > count($new_cases_array))
+                            {
+                                array_unshift($new_cases_array, 0);
+                            }
+                        }
+                    }
 
-
+                    if (!$has_currently_infected) {
+                        if (
+                            count($dateis_array) == count($new_recoveries_array) &&
+                            count($dateis_array) == count($new_cases_array)
+                        ) {
+                            $actives_array = [];
+                            $dateis_array_tmp = $dateis_array;
+                            $deaths_array_tmp = $deaths_array;
+                            $total_recoveries = 0;
+                            $total_cases = 0;
+                            while(count($dateis_array_tmp)) {
+                                $date_is = array_shift($dateis_array_tmp);
+                                $new_recoveries = array_shift($new_recoveries_array);
+                                $new_cases = array_shift($new_cases_array);
+                                $deaths = array_shift($deaths_array_tmp);
+                                $total_recoveries += $new_recoveries;
+                                $total_cases += $new_cases;
+                                $actives_array[] = $total_cases - $deaths - $total_recoveries;
+                            }
+                        }
+                    }
 
                     if (
                         count($dateis_array) == count($qty_array) &&
@@ -267,11 +338,11 @@ class ScrapStatistic extends Command
                         }
                     }
                 }
-                if ($addNewOrUpdate) {
+                // if ($addNewOrUpdate) {
                     // calculate
                     $controller = new StatisticController();
                     $controller->calculatePercentDiff($country_id);
-                }
+                // }
             }
         }
     }
