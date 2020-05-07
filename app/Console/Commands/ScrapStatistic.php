@@ -70,6 +70,9 @@ class ScrapStatistic extends Command
             $last_dateis = $country->last_dateis;
             $country_id = $country->id;
             $addNewOrUpdate = false;
+
+            // if ($country_id!=5) continue;   // comment or delete
+
             if (!empty($url))
             {
                 $subject = file_get_contents($url);
@@ -152,17 +155,17 @@ class ScrapStatistic extends Command
                         $actives_array = json_decode($matches[1], true);
                     }
 
+                    $new_recoveries_array = [];
+                    $new_cases_array = [];
                     if (!$has_currently_infected) {
                         $pattern = "/name:\s*.*New Recoveries.*\s*.*\s*.*\s*.*\s*data:\s*(\[.*\])\s*.*\s*.*}/";
                         $matches = [];
-                        $new_recoveries_array = [];
                         preg_match( $pattern , $subject, $matches);
                         if (count($matches)> 1) {
                             $new_recoveries_array = json_decode($matches[1], true);
                         }
                         $pattern = "/name:\s*.*New Cases.*\s*.*\s*.*\s*.*\s*data:\s*(\[.*\])\s*.*\s*.*}/";
                         $matches = [];
-                        $new_cases_array = [];
                         preg_match( $pattern , $subject, $matches);
                         if (count($matches)> 1) {
                             $new_cases_array = json_decode($matches[1], true);
@@ -200,7 +203,7 @@ class ScrapStatistic extends Command
                             array_shift($deaths_array);
                         }
                     }
-                    if (!$has_currently_infected) {
+                    if (!$has_currently_infected && count($new_cases_array) && count($new_recoveries_array)) {
                         if (count($dateis_array) < count($new_recoveries_array))
                         {
                             while (count($dateis_array) < count($new_recoveries_array))
@@ -239,7 +242,7 @@ class ScrapStatistic extends Command
                             array_unshift($deaths_array, 0);
                         }
                     }
-                    if (!$has_currently_infected) {
+                    if (!$has_currently_infected && count($new_cases_array) && count($new_recoveries_array)) {
                         if (count($dateis_array) > count($new_recoveries_array))
                         {
                             while (count($dateis_array) > count($new_recoveries_array))
@@ -256,7 +259,7 @@ class ScrapStatistic extends Command
                         }
                     }
 
-                    if (!$has_currently_infected) {
+                    if (!$has_currently_infected && count($new_cases_array) && count($new_recoveries_array)) {
                         if (
                             count($dateis_array) == count($new_recoveries_array) &&
                             count($dateis_array) == count($new_cases_array)
@@ -338,11 +341,11 @@ class ScrapStatistic extends Command
                         }
                     }
                 }
-                // if ($addNewOrUpdate) {
+                if ($addNewOrUpdate) {
                     // calculate
                     $controller = new StatisticController();
                     $controller->calculatePercentDiff($country_id);
-                // }
+                }
             }
         }
     }
