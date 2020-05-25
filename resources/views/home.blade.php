@@ -367,8 +367,8 @@
                             }
                         }).always(function(data) {
                             endSpinner();
-                            // location.reload();
-                            console.log(data);
+                            // console.log(data);
+                            location.reload();
                         });
                     }
                 });
