@@ -287,9 +287,9 @@
                 }
             });
 
-            $('body').on('click', '.deleteItem', function () {
+            $('body').on('click', '#removeAll', function () {
                 var data_id = $(this).data("id");
-                confirmDialog("Are You sure want to delete !?", (ans) => {
+                confirmDialog("Are you sure want to delete !?", (ans) => {
                     if (ans) {
                         $.ajax({
                             type: "DELETE",
@@ -304,6 +304,25 @@
                     }
                 });
             });
+
+            $('body').on('click', '.deleteItem', function () {
+                var data_id = $(this).data("id");
+                confirmDialog("Are you sure want to delete !?", (ans) => {
+                    if (ans) {
+                        $.ajax({
+                            type: "DELETE",
+                            url: "{{ route('country.store') }}"+'/'+data_id,
+                            success: function (data) {
+                                table.draw(false);
+                            },
+                            error: function (data) {
+                                console.log('Error:', data);
+                            }
+                        });
+                    }
+                });
+            });
+
         });
     </script>
 @endsection

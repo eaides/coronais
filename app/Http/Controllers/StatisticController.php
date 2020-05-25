@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Console\Commands\ScrapStatistic;
 use App\Country;
 use App\Statistic;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Yajra\Datatables\Datatables;
 
@@ -46,6 +48,38 @@ class StatisticController extends Controller
                 ->make(true);
         }
         return view('Statistic.ajax',compact('items'));
+    }
+
+    public function removeAll(Request $request) {
+        if ($request->ajax()) {
+            $rc = 'Contry_not_found';
+            $county_id = $request->get('county_id');
+            $country = Country::find($county_id);
+            if ($country) {
+                $rc = 'Not found statistics to remove';
+                $statFirst = Statistic::where('country_id', $county_id)
+                    ->orderBy('dateis')
+                    ->first();
+                if ($statFirst) {
+
+                    $firstDateis = $statFirst->dateis;
+                    $date = Carbon::parse($firstDateis);
+                    $date->subDay();
+                    $updateDateIs = $date->format('Y-m-d');
+
+                    $rc = 'Error when delete/update';
+                    DB::transaction(function () use($country, $county_id, $updateDateIs) {
+                        Statistic::where('country_id', $county_id)->delete();
+
+                        $country->last_dateis = $updateDateIs;
+                        $country->save();
+
+                        $rc = $updateDateIs;
+                    });
+                }
+            }
+            return response()->json(['success'=>$rc]);
+        }
     }
 
     /**

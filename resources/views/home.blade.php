@@ -25,8 +25,9 @@
                 <div class="card-header">
                     <div class="row justify-content-center">
                         <div class="col-md-6">
-                            <h4 class="card-title">Corona Virus Statistics
-                                <a class="btn btn-success ml-5" href="javascript:void(0)" id="createNewItem"> Create New Data</a>
+                            <h4 class="card-title">Statistics
+                                <a class="btn btn-success ml-5" href="javascript:void(0)" id="createNewItem">Create New Data</a>
+                                <a class="btn btn-danger ml-5" href="javascript:void(0)" id="removeAllStat">Remove All</a>
                             </h4>
                         </div>
                         <div class="col-md-4 offset-md-1 justify-content-center">
@@ -337,7 +338,7 @@
 
             $('body').on('click', '.deleteItem', function () {
                 var data_id = $(this).data("id");
-                confirmDialog("Are You sure want to delete !?", (ans) => {
+                confirmDialog("Are you sure want to delete !?", (ans) => {
                     if (ans) {
                         $.ajax({
                             type: "DELETE",
@@ -352,6 +353,27 @@
                     }
                 });
             });
+
+            $('body').on('click', '#removeAllStat', function () {
+                var country_id = $('#country_id').val();
+                confirmDialog("Are you sure want to remove all statistics !?", (ans) => {
+                    if (ans) {
+                        startSpinner();
+                        $.ajax({
+                            type: "POST",
+                            url: "{{ route('ajaxStatistic.empty') }}",
+                            data: {
+                                county_id: country_id
+                            }
+                        }).always(function(data) {
+                            endSpinner();
+                            // location.reload();
+                            console.log(data);
+                        });
+                    }
+                });
+            });
+
         });
     </script>
 @endsection

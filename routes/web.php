@@ -29,6 +29,8 @@ Route::post('ajaxChart', 'WellcomeController@ajaxData')->name('ajax.chart');
 Route::post('ajaxChartAll', 'WellcomeController@ajaxDataAll')->name('ajax.chartall');
 
 Route::post('executeScrapper', 'StatisticController@executeScrapper')->name('execute.scrapper');
+Route::post('removeAll', 'StatisticController@removeAll')->name('ajaxStatistic.empty');
+
 
 // test only
 Route::get('test', 'StatisticController@test');
