@@ -183,6 +183,10 @@
                                     <canvas id="chart1"></canvas>
                                 </div>
                                 <div class="col-md-6">
+                                    <h3>% Increase over Actives by day</h3>
+                                    <canvas id="chart6a"></canvas>
+                                </div>
+                                <div class="col-md-6">
                                     <h3>Total infected</h3>
                                     <canvas id="chart2"></canvas>
                                 </div>
@@ -446,6 +450,9 @@
             var ctx3d = document.getElementById('chart3d');
             var chart3d = new Chart(ctx3d,{type:'bar',data:{labels:[],datasets:[{label:'Quantity',data:[],borderWidth:1},]},
                 options:{scales:{xAxes:[],yAxes:[{ticks:{beginAtZero:true}}]}}});
+            var ctx6a = document.getElementById('chart6a');
+            var chart6a = new Chart(ctx6a,{type:'line',data:{labels:[],datasets:[{label:'Percentaje',data:[],borderWidth:1},]},
+                options:{scales:{xAxes:[],yAxes:[{ticks:{beginAtZero:true}}]}}});
 
             var ctx4a = document.getElementById('chart4a');
             var chart4a = new Chart(ctx4a,{type:'line',data:{labels:[],datasets:[{label:'Percentaje',data:[],borderWidth:1},]},
@@ -594,6 +601,8 @@
                 updateChart(chart1d, '1d', date, false, false);
                 updateChart(chart2d, '2d', date, false, false);
                 updateChart(chart3d, '3d', date, false, false);
+
+                updateChart(chart6a, '6a', date, false, false);
 
                 updateChart(chart4a, '4a', date, false, false);
                 updateChart(chart4b, '4b', date, false, false);

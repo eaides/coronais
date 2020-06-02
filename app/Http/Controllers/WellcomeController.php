@@ -97,7 +97,7 @@ class WellcomeController extends Controller
                 'qty', 'percent', 'diff',
                 'actives', 'diff_actives', 'active_percent',
                 'death', 'death_diff', 'death_percent',
-                'recovered', 'recovered_diff', 'recovered_percent',
+                'recovered', 'recovered_diff', 'recovered_percent', 'news_actives_percent',
                 'total_percent_vs_population', 'actives_percent_vs_population',
                 'death_percent_vs_population', 'recovered_percent_vs_population',
                 'dateis')
@@ -117,7 +117,7 @@ class WellcomeController extends Controller
                 'qty', 'percent', 'diff',
                 'actives', 'diff_actives', 'active_percent',
                 'death', 'death_diff', 'death_percent',
-                'recovered', 'recovered_diff', 'recovered_percent',
+                'recovered', 'recovered_diff', 'recovered_percent', 'news_actives_percent',
                 'total_percent_vs_population', 'actives_percent_vs_population',
                 'death_percent_vs_population', 'recovered_percent_vs_population',
                 'dateis')
@@ -170,6 +170,10 @@ class WellcomeController extends Controller
                 break;
             case '3d':
                 $data = $stats->pluck('recovered_diff');
+                break;
+
+            case '6a':
+                $data = $stats->pluck('news_actives_percent');
                 break;
 
             case '4a':

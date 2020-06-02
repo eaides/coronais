@@ -325,6 +325,7 @@ class ScrapStatistic extends Command
                             $stat->recovered = null;
                             $stat->recovered_diff = null;
                             $stat->recovered_percent = null;
+                            $stat->news_actives_percent = null;
                             //
                             $stat->total_percent_vs_population = null;
                             $stat->actives_percent_vs_population = null;

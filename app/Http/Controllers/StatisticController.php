@@ -202,29 +202,32 @@ class StatisticController extends Controller
         $this->calculateRecoveredDiff($country_id);
         $this->calculateRecoveredPercent($country_id);
 
+        $this->calculateNewsOverActivePercent($country_id);
+
         if ($country_id)
         {
             $country = Country::find($country_id);
-            if ($country && $country->population > 0)
+            if ($country)
             {
-                $this->calculateTotalPercentVsPopulation($country_id, $country->population);
-                $this->calculateActivesPercentVsPopulation($country_id, $country->population);
-                $this->calculateDeathPercentVsPopulation($country_id, $country->population);
-                $this->calculateRecoveredPercentVsPopulation($country_id, $country->population);
+                $this->doCalculatesCountryOverPopulation($country->id, $country->population);
             }
         }
         else
         {
             $countries = Country::all();
             foreach($countries as $country) {
-                if ($country->population > 0)
-                {
-                    $this->calculateTotalPercentVsPopulation($country->id, $country->population);
-                    $this->calculateActivesPercentVsPopulation($country->id, $country->population);
-                    $this->calculateDeathPercentVsPopulation($country->id, $country->population);
-                    $this->calculateRecoveredPercentVsPopulation($country->id, $country->population);
-                }
+                $this->doCalculatesCountryOverPopulation($country->id, $country->population);
             }
+        }
+    }
+
+    protected function doCalculatesCountryOverPopulation($country_id, $country_population)
+    {
+        if ($country_population > 0) {
+            $this->calculateTotalPercentVsPopulation($country_id, $country_population);
+            $this->calculateActivesPercentVsPopulation($country_id, $country_population);
+            $this->calculateDeathPercentVsPopulation($country_id, $country_population);
+            $this->calculateRecoveredPercentVsPopulation($country_id, $country_population);
         }
     }
 
@@ -383,6 +386,60 @@ class StatisticController extends Controller
                 {
                     $statNoQtyDiffOne->diff = 0;
                     $statNoQtyDiffOne->save();
+                }
+            }
+        }
+    }
+
+    protected function calculateNewsOverActivePercent($country_id=null)
+    {
+        $check_countries_id = [];
+        if ($country_id) {
+            $check_countries_id[] = $country_id;
+        } else {
+            $countries = Country::all();
+            foreach($countries as $country) {
+                $check_countries_id[]  = $country->id;
+            }
+        }
+        foreach($check_countries_id as $country_id) {
+            // Calculate Percent
+            $statNoNewsActivesDiff = Statistic::select('id','diff','news_actives_percent', 'dateis')
+                ->where('news_actives_percent', null)
+                ->where('country_id',$country_id)
+                ->orderBy('dateis')
+                ->get();
+            foreach($statNoNewsActivesDiff as $statNoNewsActivesDiffOne)
+            {
+                $news = $statNoNewsActivesDiffOne->diff;
+                $datais = $statNoNewsActivesDiffOne->dateis;
+                $last = Statistic::select('id','diff','actives', 'dateis')
+                    ->where('dateis', '<', $datais)
+                    ->where('country_id',$country_id)
+                    ->orderBy('dateis', 'desc')
+                    ->limit(1)
+                    ->first();
+                if ($last)
+                {
+                    $activesBefore = $last->actives;
+                    if ($activesBefore)
+                    {
+                        $number = $news / $activesBefore;
+                        $news_over_actives_percent = $number * 100;
+                        $perc = round($news_over_actives_percent, 6);
+                        $statNoNewsActivesDiffOne->news_actives_percent = $perc;
+                    }
+                    else
+                    {
+                        $perc = 100;
+                        $statNoNewsActivesDiffOne->news_actives_percent = $perc;
+                    }
+                    $statNoNewsActivesDiffOne->save();
+                }
+                else
+                {
+                    $statNoNewsActivesDiffOne->news_actives_percent = 100;
+                    $statNoNewsActivesDiffOne->save();
                 }
             }
         }

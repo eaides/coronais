@@ -112,6 +112,7 @@ class CountryController extends Controller
                 $stat->actives_percent_vs_population = null;
                 $stat->death_percent_vs_population = null;
                 $stat->recovered_percent_vs_population = null;
+                $stat->news_actives_percent = null;
                 $stat->save();
             }
             $controller = new StatisticController();

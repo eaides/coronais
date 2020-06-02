@@ -21,6 +21,7 @@ class Statistic extends Model
         'recovered',
         'recovered_diff',
         'recovered_percent',
+        'news_actives_percent',
         'total_percent_vs_population',
         'actives_percent_vs_population',
         'death_percent_vs_population',
