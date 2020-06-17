@@ -26,8 +26,9 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->command('scrap:statistic')->dailyAt('03:00');
-        $schedule->command('scrap:statistic')->dailyAt('05:00');
-        $schedule->command('scrap:statistic')->dailyAt('12:00');
+        $schedule->command('scrap:statistic')->dailyAt('05:20');
+        $schedule->command('scrap:statistic')->dailyAt('06:40');
+        $schedule->command('scrap:statistic')->dailyAt('12:50');
     }
 
     /**
