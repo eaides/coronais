@@ -80,12 +80,13 @@ class ScrapStatistic extends Command
                 $pattern = "/xAxis:\s*{\s*categories:\s*(\[.*\])\s*},/";
                 $matches = [];
                 $dateis_array = [];
+                $last_month = -1;
+                $year = 2020;
                 preg_match ( $pattern , $subject, $matches);
                 if (count($matches)> 1) {
                     $dates = json_decode($matches[1], true);
                     foreach($dates as $date_str)
                     {
-                        $year = 2020;
                         $day = substr($date_str,4);
                         $day = intval($day);
                         $month_str = substr($date_str,0,3);
@@ -130,6 +131,12 @@ class ScrapStatistic extends Command
                                 break;
                             default:
                                 $month = 0;
+                        }
+                        if ($month > 0 && $month != $last_month) {
+                            if ($last_month == 12 && $month == 1) {
+                                $year++;
+                            }
+                            $last_month = $month;
                         }
                         if (!$month || !$day) continue;
                         $dateis_array[] = $year . '-' . sprintf('%02d', $month) . '-' .  sprintf('%02d', $day);
