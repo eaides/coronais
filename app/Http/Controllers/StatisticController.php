@@ -274,6 +274,9 @@ class StatisticController extends Controller
                     $number = $qty / $qtyBefore;
                     $percent = ($number - 1) * 100;
                     $percent = round($percent, 4);
+                    if ($percent>9999.9999) {
+                        $percent=9999.9999;
+                    }
                     $statNoQtyPercentOne->percent = $percent;
                     $statNoQtyPercentOne->save();
                 }
@@ -329,6 +332,9 @@ class StatisticController extends Controller
                     $number = $actives / $activesBefore;
                     $active_percent = ($number - 1) * 100;
                     $active_percent = round($active_percent, 4);
+                    if ($active_percent>9999.9999) {
+                        $active_percent=9999.9999;
+                    }
                     $statNoActivePercentOne->active_percent = $active_percent;
                     $statNoActivePercentOne->save();
                 }
@@ -427,6 +433,9 @@ class StatisticController extends Controller
                         $number = $news / $activesBefore;
                         $news_over_actives_percent = $number * 100;
                         $perc = round($news_over_actives_percent, 6);
+                        if ($perc>99.999999) {
+                            $perc=99.999999;
+                        }
                         $statNoNewsActivesDiffOne->news_actives_percent = $perc;
                     }
                     else
@@ -524,6 +533,9 @@ class StatisticController extends Controller
                     $number = $death / $qty;
                     $death_percent = $number * 100;
                     $death_percent = round($death_percent, 6);
+                    if ($death_percent>99.999999) {
+                        $death_percent=99.999999;
+                    }
                     $statNoDeathPercentOne->death_percent = $death_percent;
                     $statNoDeathPercentOne->save();
                 }
@@ -639,6 +651,9 @@ class StatisticController extends Controller
                     $number = $recovered / $qty;
                     $recovered_percent = $number * 100;
                     $recovered_percent = round($recovered_percent, 6);
+                    if ($recovered_percent>99.999999) {
+                        $recovered_percent=99.999999;
+                    }
                     $statNoRecoveredPercentOne->recovered_percent = $recovered_percent;
                     $statNoRecoveredPercentOne->save();
                 }
@@ -706,6 +721,9 @@ class StatisticController extends Controller
             $number = $qty / $population;
             $percent = $number * 100;
             $percent = round($percent, 6);
+            if ($percent>99.999999) {
+                $percent=99.999999;
+            }
             $statNoTotalPercentVsPopulationOne->total_percent_vs_population = $percent;
             $statNoTotalPercentVsPopulationOne->save();
         }
@@ -726,6 +744,9 @@ class StatisticController extends Controller
             $number = $actives / $population;
             $percent = $number * 100;
             $percent = round($percent, 6);
+            if ($percent>99.999999) {
+                $percent=99.999999;
+            }
             $statNoActivePercentVsPopulationOne->actives_percent_vs_population = $percent;
             $statNoActivePercentVsPopulationOne->save();
         }
@@ -746,6 +767,9 @@ class StatisticController extends Controller
             $number = $death / $population;
             $percent = $number * 100;
             $percent = round($percent, 6);
+            if ($percent>99.999999) {
+                $percent=99.999999;
+            }
             $statNoDeathPercentVsPopulationOne->death_percent_vs_population = $percent;
             $statNoDeathPercentVsPopulationOne->save();
         }
@@ -766,6 +790,9 @@ class StatisticController extends Controller
             $number = $recovered / $population;
             $percent = $number * 100;
             $percent = round($percent, 6);
+            if ($percent>99.999999) {
+                $percent=99.999999;
+            }
             $statNoRecoveredPercentVsPopulationOne->recovered_percent_vs_population = $percent;
             $statNoRecoveredPercentVsPopulationOne->save();
         }
